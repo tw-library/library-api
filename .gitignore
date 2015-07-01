@@ -2,10 +2,13 @@
 
 # IDEA
 .idea
+.idea/
 *.iml
 
 # Gradle
 .gradle
+.gradle/
+
 build/
 !gradle-wrapper.jar
 
