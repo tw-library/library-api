@@ -34,6 +34,7 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-jetty")
     compile("org.springframework.boot:spring-boot-starter-data-jpa")
     compile("org.springframework.boot:spring-boot-starter-data-rest")
+    compile("org.springframework.boot:spring-boot-starter-test")
     compile("org.hibernate:hibernate-core:4.3.6.Final")
     compile("org.hsqldb:hsqldb:2.0.0")
 
@@ -46,8 +47,6 @@ dependencies {
     testCompile "com.jayway.jsonpath:json-path-assert:0.8.1"
     testCompile "org.mockito:mockito-core:1.9.5"
     testCompile "javax.el:javax.el-api:3.0.0"
-
-    testCompile "org.springframework.boot:spring-boot-starter-test"
 
 
 }
