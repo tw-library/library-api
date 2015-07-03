@@ -1,13 +1,17 @@
 package com.thoughtworks.library;
 
 
+import com.thoughtworks.library.book.BookBuilder;
+import com.thoughtworks.library.book.BookRepository;
+import com.thoughtworks.library.book.BookStatus;
 import org.hibernate.cfg.AvailableSettings;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.rest.RepositoryRestMvcAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.web.SpringBootServletInitializer;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -15,7 +19,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
-import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.Database;
@@ -30,10 +33,10 @@ import java.util.Properties;
 @EnableJpaRepositories
 @Import(RepositoryRestMvcAutoConfiguration.class)
 @EnableAutoConfiguration
-public class Application extends SpringBootServletInitializer{
+public class Application extends SpringBootServletInitializer {
 
     public static void main(String[] args) {
-        ApplicationContext ctx = SpringApplication.run(Application.class, args);
+        SpringApplication.run(Application.class, args);
     }
 
     private static final String COM_LIBRARY_MODELS = "com.thoughtworks.library";
@@ -45,6 +48,7 @@ public class Application extends SpringBootServletInitializer{
 
     @Bean
     public DataSource dataSource() {
+
         return new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.HSQL).build();
     }
 
@@ -69,19 +73,10 @@ public class Application extends SpringBootServletInitializer{
     }
 
     @Bean
-    public JpaTransactionManager transactionManager() throws ClassNotFoundException {
-        JpaTransactionManager transactionManager = new JpaTransactionManager();
-        transactionManager.setEntityManagerFactory(entityManagerFactory().getObject());
-
-        return transactionManager;
-    }
-
-    @Bean
     public Properties jpaProperties() {
         Properties properties = new Properties();
         properties.put(AvailableSettings.HBM2DDL_AUTO, "create-drop");
         return properties;
     }
-
 
 }

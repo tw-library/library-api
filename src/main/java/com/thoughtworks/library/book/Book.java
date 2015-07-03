@@ -1,12 +1,7 @@
 package com.thoughtworks.library.book;
 
-
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(name="book")
@@ -15,7 +10,7 @@ public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="id")
-    private Integer id;
+    private Long id;
 
     @Column(name="title")
     private String title;
@@ -26,10 +21,6 @@ public class Book {
     @Column(name="status")
     private BookStatus status;
 
-    public Book() {
-
-    }
-
     public BookStatus getStatus() {
         return status;
     }
@@ -38,11 +29,11 @@ public class Book {
         this.status = status;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -64,11 +55,19 @@ public class Book {
 
     @Override
     public boolean equals(Object obj) {
-        return getId().equals(((Book) obj).getId());
+        if (obj == null || !(obj.getClass() == this.getClass())) {
+            return false;
+        }
+
+        Book other = (Book)obj;
+        return Objects.equals(this.id, other.id) &&
+                Objects.equals(this.title, other.title) &&
+                Objects.equals(this.author, other.author) &&
+                Objects.equals(this.status, other.status);
     }
 
     @Override
     public int hashCode() {
-        return getId().hashCode();
+        return Objects.hash(this.id, this.title, this.author, this.status);
     }
 }
