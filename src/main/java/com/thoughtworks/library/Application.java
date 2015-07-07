@@ -78,5 +78,4 @@ public class Application extends SpringBootServletInitializer {
         properties.put(AvailableSettings.HBM2DDL_AUTO, "create-drop");
         return properties;
     }
-
 }
