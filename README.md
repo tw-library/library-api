@@ -2,3 +2,8 @@
 
 
 Available at: http://tw-library-api.herokuapp.com/
+
+## Running in local machine
+
+1. At the project folder, run the following command: gradle bootRun
+2. Access the address: http://localhost:8080/
