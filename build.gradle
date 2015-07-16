@@ -1,3 +1,12 @@
+loadConfiguration()
+
+def loadConfiguration() {
+    def env = System.getenv("APP_ENV")
+    def environment = (env == null ? 'development' : env)
+    project.ext.environment = environment
+    println ">>>>>>> Environment is set to $environment"
+}
+
 group 'com.thoughtworks.library'
 version '1.0-SNAPSHOT'
 
@@ -22,7 +31,6 @@ repositories {
     mavenCentral()
 }
 
-
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
@@ -38,6 +46,7 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-test")
     compile("org.hibernate:hibernate-core:4.3.6.Final")
     compile("org.hsqldb:hsqldb:2.0.0")
+    compile("org.postgresql:postgresql:9.3-1100-jdbc4")
 
     compile ("com.fasterxml.jackson.core:jackson-core:2.4.1")
     compile ("com.fasterxml.jackson.core:jackson-databind:2.4.1.1")
@@ -51,12 +60,21 @@ dependencies {
     testCompile "com.jayway.jsonpath:json-path-assert:0.8.1"
     testCompile "org.mockito:mockito-core:1.9.5"
     testCompile "javax.el:javax.el-api:3.0.0"
-
-
 }
 
 task wrapper(type: Wrapper) {
     gradleVersion = '2.3'
 }
+
+task copyConfiguration << {
+    println "Target environment: $environment"
+
+    copy {
+        from "src/main/environment/$environment"
+        into "src/main/resources"
+        include "*/"
+    }
+}
+processResources.dependsOn copyConfiguration
 
 task stage(dependsOn: ['clean', 'installApp'])

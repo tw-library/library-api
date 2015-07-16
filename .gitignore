@@ -1,4 +1,4 @@
-.vagrant
+src/main/resources/configuration.properties
 
 # IDEA
 .idea
@@ -6,7 +6,6 @@
 
 # Gradle
 .gradle
-
 build/
 !gradle-wrapper.jar
 
