@@ -60,6 +60,7 @@ dependencies {
     testCompile "com.jayway.jsonpath:json-path-assert:0.8.1"
     testCompile "org.mockito:mockito-core:1.9.5"
     testCompile "javax.el:javax.el-api:3.0.0"
+    testCompile "org.apache.velocity:velocity:1.6.2"
 }
 
 task wrapper(type: Wrapper) {

@@ -1,25 +1,25 @@
 package com.thoughtworks.library.book;
 
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.Wither;
+
+@AllArgsConstructor
+@RequiredArgsConstructor
+@Wither
 public class BookBuilder {
 
-    private Book instance = new Book();
-
-    public BookBuilder withAuthor(String author){
-        instance.setAuthor(author);
-        return this;
-    }
-
-    public BookBuilder withTitle(String title){
-        instance.setTitle(title);
-        return this;
-    }
-
-    public BookBuilder withStatus(BookStatus status){
-        instance.setStatus(status);
-        return this;
-    }
+    private String author = "Guimares Sanches";
+    private String title = "Minha Casa";
+    private BookStatus status = BookStatus.AVAILABLE;
 
     public Book build(){
-        return instance;
+        Book book = new Book();
+
+        book.setAuthor(author);
+        book.setStatus(status);
+        book.setTitle(title);
+
+        return book;
     }
 }

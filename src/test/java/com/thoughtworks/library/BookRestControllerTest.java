@@ -80,20 +80,4 @@ public class BookRestControllerTest {
                 .andExpect(jsonPath("$_embedded.books[1].status", is(book2.getStatus().name())));
     }
 
-    @Test
-    public void shouldGetListAllBooks() throws Exception {
-
-        mockMvc.perform(get("/books"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaTypes.HAL_JSON))
-                .andExpect(jsonPath("$_embedded.books", hasSize(2)))
-                .andExpect(jsonPath("$_embedded.books[0].title", is(book1.getTitle())))
-                .andExpect(jsonPath("$_embedded.books[0].author", is(book1.getAuthor())))
-                .andExpect(jsonPath("$_embedded.books[0].status", is(book1.getStatus().name())))
-
-                .andExpect(jsonPath("$_embedded.books[1].title", is(book2.getTitle())))
-                .andExpect(jsonPath("$_embedded.books[1].author", is(book2.getAuthor())))
-                .andExpect(jsonPath("$_embedded.books[1].status", is(book2.getStatus().name())));
-    }
-
 }
