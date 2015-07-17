@@ -24,22 +24,42 @@ apply plugin: 'spring-boot'
 
 jar {
     baseName = 'library-api'
-    version =  '0.1.0'
+    version = '0.1.0'
 }
 
 repositories {
     mavenCentral()
 }
 
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
+apply plugin: 'idea'
+
+configurations {
+    provided
+    provided.extendsFrom(compile)
+}
+
+idea {
+    module {
+        scopes.PROVIDED.plus += [configurations.provided]
+    }
+}
+
+sourceSets {
+    main {
+        compileClasspath += [configurations.provided]
+    }
+    test {
+        compileClasspath += [configurations.provided]
+        runtimeClasspath += [configurations.provided]
+    }
+}
 
 dependencies {
     compile("org.springframework.boot:spring-boot-starter-web") {
         exclude module: "spring-boot-starter-tomcat"
     }
 
-    compile("org.projectlombok:lombok:1.16.4")
+    provided "org.projectlombok:lombok:1.16.4"
     compile("org.springframework.boot:spring-boot-starter-jetty")
     compile("org.springframework.boot:spring-boot-starter-data-jpa")
     compile("org.springframework.boot:spring-boot-starter-data-rest")
@@ -48,8 +68,8 @@ dependencies {
     compile("org.hsqldb:hsqldb:2.0.0")
     compile("org.postgresql:postgresql:9.3-1100-jdbc4")
 
-    compile ("com.fasterxml.jackson.core:jackson-core:2.4.1")
-    compile ("com.fasterxml.jackson.core:jackson-databind:2.4.1.1")
+    compile("com.fasterxml.jackson.core:jackson-core:2.4.1")
+    compile("com.fasterxml.jackson.core:jackson-databind:2.4.1.1")
 
     testCompile group: "junit", name: "junit", version: "4.11"
     testCompile "junit:junit:4.11"
