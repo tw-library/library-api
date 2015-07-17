@@ -1,8 +1,9 @@
 loadConfiguration()
 
 def loadConfiguration() {
-    def env = System.getenv("APP_ENV")
-    def environment = (env == null ? 'development' : env)
+    def environment = hasProperty('env') ? env : System.getenv('APP_ENV')
+    environment = environment != null ? environment : 'development'
+
     project.ext.environment = environment
     println ">>>>>>> Environment is set to $environment"
 }
@@ -31,35 +32,12 @@ repositories {
     mavenCentral()
 }
 
-apply plugin: 'idea'
-
-configurations {
-    provided
-    provided.extendsFrom(compile)
-}
-
-idea {
-    module {
-        scopes.PROVIDED.plus += [configurations.provided]
-    }
-}
-
-sourceSets {
-    main {
-        compileClasspath += [configurations.provided]
-    }
-    test {
-        compileClasspath += [configurations.provided]
-        runtimeClasspath += [configurations.provided]
-    }
-}
-
 dependencies {
     compile("org.springframework.boot:spring-boot-starter-web") {
         exclude module: "spring-boot-starter-tomcat"
     }
 
-    provided "org.projectlombok:lombok:1.16.4"
+    compile("org.projectlombok:lombok:1.16.4")
     compile("org.springframework.boot:spring-boot-starter-jetty")
     compile("org.springframework.boot:spring-boot-starter-data-jpa")
     compile("org.springframework.boot:spring-boot-starter-data-rest")
