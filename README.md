@@ -1,11 +1,10 @@
 # library-api [![Build Status](https://snap-ci.com/tw-library/library-api/branch/master/build_image)](https://snap-ci.com/tw-library/library-api/branch/master)
 
-## Running in local machine
+## Accessing the live application
 
-Access the live application:
 `http://tw-library-api.herokuapp.com/`
 
-## Running in local machine
+## Running on local machine
 
 1. At the project folder, run the following command:
   `gradle bootRun`
