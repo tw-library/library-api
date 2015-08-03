@@ -3,7 +3,10 @@ package com.thoughtworks.library;
 import com.thoughtworks.library.book.Book;
 import com.thoughtworks.library.book.BookBuilder;
 import com.thoughtworks.library.book.BookRepository;
-import com.thoughtworks.library.book.BookStatus;
+import com.thoughtworks.library.bookcopy.BookCopy;
+import com.thoughtworks.library.bookcopy.BookCopyBuilder;
+import com.thoughtworks.library.bookcopy.BookCopyRepository;
+import com.thoughtworks.library.bookcopy.BookCopyStatus;
 import com.thoughtworks.library.loan.Loan;
 import org.junit.Assert;
 import org.junit.Before;
@@ -36,41 +39,55 @@ public class LoanRestControllerTest extends ApplicationTestBase {
     private MockMvc mockMvc;
 
     @Autowired
-    BookRepository bookRepository;
+    BookCopyRepository bookCopyRepository;
 
-    private Book book;
+    private BookCopy bookCopy;
 
     @Autowired
     private WebApplicationContext webApplicationContext;
+
+    @Autowired
+    BookRepository bookRepository;
+
+    private Book book;
 
     @Before
     public void setup() throws Exception {
 
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
 
+        book = new BookBuilder()
+                .withAuthor("BOOK 1 AUTHOR EXAMPLE")
+                .withTitle("BOOK 1 NAME EXAMPLE")
+                .build();
+
+        bookRepository.save(book);
+
     }
 
     @Test
     public void shouldLoanBookWhenItIsAvailable() throws  Exception{
 
-        book = new BookBuilder().build();
+        bookCopy = new BookCopyBuilder()
+                        .withBook(book)
+                        .build();
 
-        bookRepository.save(book);
+        bookCopyRepository.save(bookCopy);
 
-        Loan loan = new Loan(book);
+        Loan loan = new Loan(bookCopy);
 
         HashMap<String, Object> inputs = new HashMap<String, Object>();
-        inputs.put("book", book);
-        String loanJson = loadFixture("book.json", inputs);
+        inputs.put("bookCopy", bookCopy);
+        String loanJson = loadFixture("bookCopy.json", inputs);
         
         mockMvc.perform(post("/loans")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(loanJson))
                         .andExpect(status().isCreated());
 
-        Book borrowedBook = bookRepository.findOne(book.getId());
+        BookCopy borrowedBookCopy = bookCopyRepository.findOne(bookCopy.getId());
 
-        Assert.assertThat(borrowedBook.getStatus(), is(BookStatus.BORROWED));
+        Assert.assertThat(borrowedBookCopy.getStatus(), is(BookCopyStatus.BORROWED));
 
     }
 
@@ -78,24 +95,25 @@ public class LoanRestControllerTest extends ApplicationTestBase {
     @Test
     public void shouldNotLoanBookWhenItIsAlreadyBorrowed() throws  Exception{
 
-        book = new BookBuilder()
-                        .withStatus(BookStatus.BORROWED)
+        bookCopy = new BookCopyBuilder()
+                        .withBook(book)
+                        .withStatus(BookCopyStatus.BORROWED)
                         .build();
 
-        bookRepository.save(book);
+        bookCopyRepository.save(bookCopy);
 
-        Loan loan = new Loan(book);
+        Loan loan = new Loan(bookCopy);
 
         HashMap<String, Object> inputs = new HashMap<String, Object>();
-        inputs.put("book", book);
-        String loanJson = loadFixture("book.json", inputs);
+        inputs.put("bookCopy", bookCopy);
+        String loanJson = loadFixture("bookCopy.json", inputs);
 
         mockMvc.perform(post("/loans")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(loanJson))
                 .andExpect(status().isPreconditionFailed());
 
-        Book borrowedBook = bookRepository.findOne(book.getId());
+        BookCopy borrowedBookCopy = bookCopyRepository.findOne(bookCopy.getId());
 
 
     }

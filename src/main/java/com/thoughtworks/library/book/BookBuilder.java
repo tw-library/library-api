@@ -1,5 +1,6 @@
 package com.thoughtworks.library.book;
 
+import com.thoughtworks.library.bookcopy.BookCopyStatus;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Wither;
@@ -9,15 +10,12 @@ import lombok.experimental.Wither;
 @Wither
 public class BookBuilder {
 
-    private String author = "Guimares Sanches";
-    private String title = "Minha Casa";
-    private BookStatus status = BookStatus.AVAILABLE;
+    private String author;
+    private String title;
 
     public Book build(){
         Book book = new Book();
-
         book.setAuthor(author);
-        book.setStatus(status);
         book.setTitle(title);
 
         return book;

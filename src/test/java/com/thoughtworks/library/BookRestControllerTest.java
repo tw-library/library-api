@@ -4,7 +4,7 @@ package com.thoughtworks.library;
 import com.thoughtworks.library.book.Book;
 import com.thoughtworks.library.book.BookBuilder;
 import com.thoughtworks.library.book.BookRepository;
-import com.thoughtworks.library.book.BookStatus;
+import com.thoughtworks.library.bookcopy.BookCopyStatus;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,7 +50,6 @@ public class BookRestControllerTest {
         book1 = new BookBuilder()
                 .withAuthor("BOOK 1 AUTHOR EXAMPLE")
                 .withTitle("BOOK 1 NAME EXAMPLE")
-                .withStatus(BookStatus.BORROWED)
                 .build();
         bookRepository.save(book1);
 
@@ -58,7 +57,6 @@ public class BookRestControllerTest {
         book2 = new BookBuilder()
                 .withAuthor("BOOK 2 AUTHOR EXAMPLE")
                 .withTitle("BOOK 2 NAME EXAMPLE")
-                .withStatus(BookStatus.AVAILABLE)
                 .build();
         bookRepository.save(book2);
 
@@ -73,11 +71,9 @@ public class BookRestControllerTest {
                 .andExpect(jsonPath("$_embedded.books", hasSize(2)))
                 .andExpect(jsonPath("$_embedded.books[0].title", is(book1.getTitle())))
                 .andExpect(jsonPath("$_embedded.books[0].author", is(book1.getAuthor())))
-                .andExpect(jsonPath("$_embedded.books[0].status", is(book1.getStatus().name())))
 
                 .andExpect(jsonPath("$_embedded.books[1].title", is(book2.getTitle())))
-                .andExpect(jsonPath("$_embedded.books[1].author", is(book2.getAuthor())))
-                .andExpect(jsonPath("$_embedded.books[1].status", is(book2.getStatus().name())));
+                .andExpect(jsonPath("$_embedded.books[1].author", is(book2.getAuthor())));
     }
 
 }

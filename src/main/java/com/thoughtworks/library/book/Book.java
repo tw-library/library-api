@@ -28,10 +28,4 @@ public class Book {
     @Column(name="author")
     private String author;
 
-    @Column(name="status")
-    protected BookStatus status;
-
-    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL)
-    private Set<Loan> loans;
-
 }

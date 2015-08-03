@@ -1,6 +1,8 @@
 package com.thoughtworks.library.loan;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.thoughtworks.library.book.Book;
+import com.thoughtworks.library.bookcopy.BookCopy;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -13,8 +15,8 @@ public class Loan {
 
     public Loan() {}
 
-    public Loan(Book book) {
-        this.book = book;
+    public Loan(BookCopy bookCopy) {
+        this.bookCopy = bookCopy;
     }
 
     @Id
@@ -22,9 +24,9 @@ public class Loan {
     @Column(name = "id")
     private Integer id;
 
-    @JoinColumn(name = "book_id")
+    @JoinColumn(name = "bookcopy_id")
     @ManyToOne(fetch=FetchType.EAGER)
-    private Book book;
+    private BookCopy bookCopy;
 
     @Column(name = "start_date")
     private Date startDate;

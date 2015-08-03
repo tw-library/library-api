@@ -1,9 +1,9 @@
 package com.thoughtworks.library.loan;
 
-import com.thoughtworks.library.book.Book;
-import com.thoughtworks.library.book.BookRepository;
-import com.thoughtworks.library.book.BookStatus;
-import com.thoughtworks.library.exceptions.BookNotAvailableException;
+import com.thoughtworks.library.bookcopy.BookCopy;
+import com.thoughtworks.library.bookcopy.BookCopyRepository;
+import com.thoughtworks.library.bookcopy.BookCopyStatus;
+import com.thoughtworks.library.exceptions.BookCopyNotAvailableException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,17 +14,17 @@ public class LoanService {
     private LoanRepository loanRepository;
 
     @Autowired
-    private BookRepository bookRepository;
+    private BookCopyRepository bookCopyRepository;
 
 
-    public void borrowBook(Book book) throws BookNotAvailableException {
+    public void borrowBookCopy(BookCopy bookCopy) throws BookCopyNotAvailableException {
 
-        if (book.getStatus().equals(BookStatus.BORROWED)) throw new BookNotAvailableException();
+        if (bookCopy.getStatus().equals(BookCopyStatus.BORROWED)) throw new BookCopyNotAvailableException();
 
-        book.setStatus(BookStatus.BORROWED);
-        bookRepository.save(book);
+        bookCopy.setStatus(BookCopyStatus.BORROWED);
+        bookCopyRepository.save(bookCopy);
 
-        Loan loan = new Loan(book);
+        Loan loan = new Loan(bookCopy);
         loanRepository.save(loan);
     }
 
