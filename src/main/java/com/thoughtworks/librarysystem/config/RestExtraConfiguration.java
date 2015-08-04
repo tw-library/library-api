@@ -1,7 +1,7 @@
-package com.thoughtworks.library.config;
+package com.thoughtworks.librarysystem.config;
 
-import com.thoughtworks.library.book.Book;
-import com.thoughtworks.library.loan.Loan;
+import com.thoughtworks.librarysystem.book.Book;
+import com.thoughtworks.librarysystem.loan.Loan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
 import org.springframework.data.rest.webmvc.config.RepositoryRestMvcConfiguration;

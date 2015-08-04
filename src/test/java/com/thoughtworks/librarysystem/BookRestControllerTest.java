@@ -1,10 +1,9 @@
-package com.thoughtworks.library;
+package com.thoughtworks.librarysystem;
 
 
-import com.thoughtworks.library.book.Book;
-import com.thoughtworks.library.book.BookBuilder;
-import com.thoughtworks.library.book.BookRepository;
-import com.thoughtworks.library.bookcopy.BookCopyStatus;
+import com.thoughtworks.librarysystem.book.Book;
+import com.thoughtworks.librarysystem.book.BookBuilder;
+import com.thoughtworks.librarysystem.book.BookRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -1,6 +1,5 @@
-package com.thoughtworks.library.book;
+package com.thoughtworks.librarysystem.book;
 
-import com.thoughtworks.library.bookcopy.BookCopyStatus;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Wither;

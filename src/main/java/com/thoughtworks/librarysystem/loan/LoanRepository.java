@@ -1,7 +1,6 @@
-package com.thoughtworks.library.loan;
+package com.thoughtworks.librarysystem.loan;
 
-import com.thoughtworks.library.book.Book;
-import com.thoughtworks.library.bookcopy.BookCopy;
+import com.thoughtworks.librarysystem.copy.Copy;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
@@ -10,5 +9,5 @@ import java.util.List;
 @RepositoryRestResource
 public interface LoanRepository extends CrudRepository<Loan, Integer> {
 
-    List<Loan> findByBookCopy(BookCopy borrowedBookCopy);
+    List<Loan> findByCopy(Copy copy);
 }

@@ -1,9 +1,9 @@
-package com.thoughtworks.library.exceptions;
+package com.thoughtworks.librarysystem.exceptions;
 
 public class BookNotAvailableException extends RuntimeException {
 
     public BookNotAvailableException(){
-        super("Book requested is not available.");
+        super("Library requested is not available.");
     }
 
 }

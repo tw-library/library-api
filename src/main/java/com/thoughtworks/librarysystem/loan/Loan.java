@@ -1,8 +1,6 @@
-package com.thoughtworks.library.loan;
+package com.thoughtworks.librarysystem.loan;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.thoughtworks.library.book.Book;
-import com.thoughtworks.library.bookcopy.BookCopy;
+import com.thoughtworks.librarysystem.copy.Copy;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -15,18 +13,19 @@ public class Loan {
 
     public Loan() {}
 
-    public Loan(BookCopy bookCopy) {
-        this.bookCopy = bookCopy;
+    public Loan(Copy copy) {
+        this.copy = copy;
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator ="loan_gen" )
+    @SequenceGenerator(name= "loan_gen", sequenceName = "loan_gen")
     private Integer id;
 
-    @JoinColumn(name = "bookcopy_id")
+    @JoinColumn(name = "copy_id")
     @ManyToOne(fetch=FetchType.EAGER)
-    private BookCopy bookCopy;
+    private Copy copy;
 
     @Column(name = "start_date")
     private Date startDate;

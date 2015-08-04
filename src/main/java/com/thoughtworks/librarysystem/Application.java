@@ -1,4 +1,4 @@
-package com.thoughtworks.library;
+package com.thoughtworks.librarysystem;
 
 
 import org.hibernate.cfg.AvailableSettings;
@@ -42,7 +42,7 @@ public class Application extends SpringBootServletInitializer {
 
 
 
-    private static final String COM_LIBRARY_MODELS = "com.thoughtworks.library";
+    private static final String COM_LIBRARY_MODELS = "com.thoughtworks.librarysystem";
 
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
@@ -51,6 +51,7 @@ public class Application extends SpringBootServletInitializer {
 
     @Bean
     public DataSource dataSource()  throws URISyntaxException, SQLException {
+
         URI dbUri = new URI(env.getProperty("database.url"));
 
         String username = dbUri.getUserInfo().split(":")[0];

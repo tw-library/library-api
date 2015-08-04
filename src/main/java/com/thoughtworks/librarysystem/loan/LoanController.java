@@ -1,6 +1,6 @@
-package com.thoughtworks.library.loan;
+package com.thoughtworks.librarysystem.loan;
 
-import com.thoughtworks.library.exceptions.BookCopyNotAvailableException;
+import com.thoughtworks.librarysystem.exceptions.CopyNotAvailableException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.RepositoryRestController;
 import org.springframework.http.HttpStatus;
@@ -21,8 +21,8 @@ public class LoanController {
     public ResponseEntity saveLoan(@RequestBody Loan loan) {
 
         try {
-            loanService.borrowBookCopy(loan.getBookCopy());
-        }catch (BookCopyNotAvailableException e){
+            loanService.borrowCopy(loan.getCopy());
+        }catch (CopyNotAvailableException e){
             return new ResponseEntity(HttpStatus.PRECONDITION_FAILED);
         }
 

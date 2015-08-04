@@ -1,13 +1,11 @@
-package com.thoughtworks.library.book;
+package com.thoughtworks.librarysystem.book;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import com.thoughtworks.library.loan.Loan;
 import lombok.Data;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
-import java.util.Set;
 
 @Table(name="book")
 @JsonIdentityInfo(property = "id", generator = ObjectIdGenerators.PropertyGenerator.class)
@@ -16,8 +14,9 @@ import java.util.Set;
 public class Book {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="id")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator ="book_gen" )
+    @SequenceGenerator(name= "book_gen", sequenceName = "book_gen")
     private Integer id;
 
     @NotBlank

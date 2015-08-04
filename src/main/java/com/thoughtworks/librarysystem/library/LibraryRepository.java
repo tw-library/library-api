@@ -1,8 +1,8 @@
-package com.thoughtworks.library.book;
+package com.thoughtworks.librarysystem.library;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 @RepositoryRestResource
-public interface BookRepository extends CrudRepository<Book, Integer> {
+public interface LibraryRepository extends CrudRepository<Library, Integer> {
 }

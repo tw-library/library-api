@@ -8,7 +8,7 @@ def loadConfiguration() {
     println ">>>>>>> Environment is set to $environment"
 }
 
-group 'com.thoughtworks.library'
+group 'com.thoughtworks.librarysystem'
 version '1.0-SNAPSHOT'
 
 buildscript {
@@ -24,7 +24,7 @@ apply plugin: 'java'
 apply plugin: 'spring-boot'
 
 jar {
-    baseName = 'library-api'
+    baseName = 'librarysystem-api'
     version = '0.1.0'
 }
 
