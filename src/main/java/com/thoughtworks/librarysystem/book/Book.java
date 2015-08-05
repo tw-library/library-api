@@ -20,11 +20,35 @@ public class Book {
     private Integer id;
 
     @NotBlank
-    @Column(name="title")
+    @Column
     private String title;
 
     @NotBlank
-    @Column(name="author")
+    @Column
     private String author;
+
+    @Column
+    private String subtitle;
+
+    @Column(columnDefinition="text")
+    private String description;
+
+    @Column
+    private Long isbn13;
+
+    @Column
+    private String publisher;
+
+    @Column
+    private String publicationDate;
+
+    @Column
+    private Integer numberOfPages;
+
+    @Column
+    private String donator;
+
+    @Column(columnDefinition="text")
+    private String imageUrl;
 
 }
