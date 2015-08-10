@@ -91,10 +91,14 @@ public class LibraryRestControllerTest {
     @Test
     public void shouldListExistingLibrary() throws Exception {
 
-        mockMvc.perform(get("/libraries/"+library.getId()))
+        mockMvc.perform(get(mountUrlToGetLibrary(library)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaTypes.HAL_JSON))
                 .andExpect(jsonPath("$.name", is(library.getName())));
+    }
+
+    private String mountUrlToGetLibrary(Library library) {
+        return "/libraries/" + library.getId();
     }
 
 }

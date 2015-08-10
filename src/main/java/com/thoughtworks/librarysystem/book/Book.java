@@ -34,7 +34,7 @@ public class Book {
     private String description;
 
     @Column
-    private Long isbn13;
+    private Long isbn;
 
     @Column
     private String publisher;

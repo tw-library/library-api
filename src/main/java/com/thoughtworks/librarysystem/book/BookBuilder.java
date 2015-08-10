@@ -27,7 +27,7 @@ public class BookBuilder {
         book.setTitle(title);
         book.setSubtitle(subtitle);
         book.setDescription(description);
-        book.setIsbn13(isbn13);
+        book.setIsbn(isbn13);
         book.setPublisher(publisher);
         book.setPublicationDate(publicationDate);
         book.setNumberOfPages(numberOfPages);
