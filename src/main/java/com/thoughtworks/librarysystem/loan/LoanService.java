@@ -3,7 +3,8 @@ package com.thoughtworks.librarysystem.loan;
 import com.thoughtworks.librarysystem.copy.Copy;
 import com.thoughtworks.librarysystem.copy.CopyRepository;
 import com.thoughtworks.librarysystem.copy.CopyStatus;
-import com.thoughtworks.librarysystem.exceptions.CopyNotAvailableException;
+import com.thoughtworks.librarysystem.loan.exceptions.CopyNotAvailableException;
+import com.thoughtworks.librarysystem.loan.exceptions.UserLoanNotIdentifyException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,15 +18,22 @@ public class LoanService {
     private CopyRepository copyRepository;
 
 
-    public void borrowCopy(Copy bookCopy) throws CopyNotAvailableException {
+    public Loan borrowCopy(Copy copy, String email) throws CopyNotAvailableException, UserLoanNotIdentifyException {
 
-        if (bookCopy.getStatus().equals(CopyStatus.BORROWED)) throw new CopyNotAvailableException();
+        if (copy.getStatus().equals(CopyStatus.BORROWED)) {
+            throw new CopyNotAvailableException();
+        }
 
-        bookCopy.setStatus(CopyStatus.BORROWED);
-        copyRepository.save(bookCopy);
+        copy.setStatus(CopyStatus.BORROWED);
+        copyRepository.save(copy);
 
-        Loan loan = new Loan(bookCopy);
-        loanRepository.save(loan);
+        Loan loan = new LoanBuilder()
+                .withCopy(copy)
+                .withEmail(email)
+                .build();
+
+        return loanRepository.save(loan);
+
     }
 
 }

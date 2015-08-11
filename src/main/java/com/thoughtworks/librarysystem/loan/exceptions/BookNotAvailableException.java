@@ -1,4 +1,4 @@
-package com.thoughtworks.librarysystem.exceptions;
+package com.thoughtworks.librarysystem.loan.exceptions;
 
 public class BookNotAvailableException extends RuntimeException {
 

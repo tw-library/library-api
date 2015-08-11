@@ -1,1 +1,4 @@
-{"copy": "/copies/$copy.id"}
+{
+  "copy": "/copies/$copy.id",
+  "email": "$email"
+}

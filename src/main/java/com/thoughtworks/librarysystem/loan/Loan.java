@@ -1,21 +1,22 @@
 package com.thoughtworks.librarysystem.loan;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.thoughtworks.librarysystem.copy.Copy;
 import lombok.Data;
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.sql.Date;
 
 @Entity
 @Table(name = "loan")
 @Data
 public class Loan {
-
-    public Loan() {}
-
-    public Loan(Copy copy) {
-        this.copy = copy;
-    }
 
     @Id
     @Column(name = "id")
@@ -28,10 +29,16 @@ public class Loan {
     private Copy copy;
 
     @Column(name = "start_date")
+    @NotNull
     private Date startDate;
 
     @Column(name = "end_date")
     private Date endDate;
+
+    @NotBlank
+    @Column(name = "email")
+    @Email
+    private String email;
 
     @PrePersist
     void onCreate() {

@@ -1,5 +1,6 @@
-package com.thoughtworks.librarysystem;
+package com.thoughtworks.librarysystem.loan;
 
+import com.thoughtworks.librarysystem.Application;
 import com.thoughtworks.librarysystem.book.Book;
 import com.thoughtworks.librarysystem.book.BookBuilder;
 import com.thoughtworks.librarysystem.book.BookRepository;
@@ -7,7 +8,7 @@ import com.thoughtworks.librarysystem.copy.Copy;
 import com.thoughtworks.librarysystem.copy.CopyBuilder;
 import com.thoughtworks.librarysystem.copy.CopyRepository;
 import com.thoughtworks.librarysystem.copy.CopyStatus;
-import com.thoughtworks.librarysystem.exceptions.CopyNotAvailableException;
+import com.thoughtworks.librarysystem.loan.exceptions.CopyNotAvailableException;
 import com.thoughtworks.librarysystem.library.Library;
 import com.thoughtworks.librarysystem.library.LibraryBuilder;
 import com.thoughtworks.librarysystem.library.LibraryRepository;
@@ -79,7 +80,7 @@ public class LoanServiceTest {
 
         copyRepository.save(copy);
 
-        loanService.borrowCopy(copy);
+        loanService.borrowCopy(copy, "tcruz@thoughtworks.com");
 
         Loan loan = loanRepository.findByCopy(copy).get(0);
         Copy borrowedCopy = copyRepository.findOne(copy.getId());
@@ -88,6 +89,34 @@ public class LoanServiceTest {
 
         assertThat(loan, is(not(nullValue())));
         assertThat(loan.getStartDate(), is(not(nullValue())));
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void shouldNotCreateLoanWithNoIdentify() {
+
+        copy = new CopyBuilder()
+                .withBook(book)
+                .withLibrary(library)
+                .build();
+
+        copyRepository.save(copy);
+
+        assertThat(loanService.borrowCopy(copy, null), is(nullValue()));
+
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void shouldNotCreateLoanWithInvalidEmail() {
+
+        copy = new CopyBuilder()
+                .withBook(book)
+                .withLibrary(library)
+                .build();
+
+        copyRepository.save(copy);
+
+        assertThat(loanService.borrowCopy(copy, "test"), is(nullValue()));
+
     }
 
     @Test(expected = CopyNotAvailableException.class)
@@ -101,6 +130,6 @@ public class LoanServiceTest {
 
         copyRepository.save(copy);
 
-        loanService.borrowCopy(copy);
+        loanService.borrowCopy(copy, "tcruz@thoughtworks.com");
     }
 }

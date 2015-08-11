@@ -17,6 +17,7 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.Database;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 
+import javax.persistence.ValidationMode;
 import javax.sql.DataSource;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -39,8 +40,6 @@ public class Application extends SpringBootServletInitializer {
 
         SpringApplication.run(Application.class, args);
     }
-
-
 
     private static final String COM_LIBRARY_MODELS = "com.thoughtworks.librarysystem";
 

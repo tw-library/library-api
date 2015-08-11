@@ -1,6 +1,7 @@
-package com.thoughtworks.librarysystem;
+package com.thoughtworks.librarysystem.book;
 
 
+import com.thoughtworks.librarysystem.Application;
 import com.thoughtworks.librarysystem.book.Book;
 import com.thoughtworks.librarysystem.book.BookBuilder;
 import com.thoughtworks.librarysystem.book.BookRepository;
