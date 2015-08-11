@@ -1,4 +1,4 @@
-package com.thoughtworks.librarysystem.config;
+package com.thoughtworks.librarysystem.commons.config;
 
 import org.springframework.stereotype.Component;
 

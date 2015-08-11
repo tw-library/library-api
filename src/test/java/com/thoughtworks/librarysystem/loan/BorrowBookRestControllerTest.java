@@ -35,7 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebAppConfiguration
 @DirtiesContext
 @Transactional
-public class LoanRestControllerTest extends ApplicationTestBase {
+public class BorrowBookRestControllerTest extends ApplicationTestBase {
 
     private MockMvc mockMvc;
 
@@ -79,7 +79,7 @@ public class LoanRestControllerTest extends ApplicationTestBase {
         inputs.put("copy", copy);
         inputs.put("email", "tcruz@thoughtworks.com");
 
-        String loanJson = loadFixture("copy.json", inputs);
+        String loanJson = loadFixture("loan.json", inputs);
         
         mockMvc.perform(post("/loans")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -106,7 +106,7 @@ public class LoanRestControllerTest extends ApplicationTestBase {
         inputs.put("copy", copy);
         inputs.put("email", "tcruz@thoughtworks.com");
 
-        String loanJson = loadFixture("copy.json", inputs);
+        String loanJson = loadFixture("loan.json", inputs);
 
         mockMvc.perform(post("/loans")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -129,7 +129,7 @@ public class LoanRestControllerTest extends ApplicationTestBase {
         inputs.put("email", "");
 
 
-        String loanJson = loadFixture("copy.json", inputs);
+        String loanJson = loadFixture("loan.json", inputs);
 
         mockMvc.perform(post("/loans")
                 .contentType(MediaType.APPLICATION_JSON)
