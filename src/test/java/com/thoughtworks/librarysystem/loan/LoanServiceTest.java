@@ -8,13 +8,10 @@ import com.thoughtworks.librarysystem.copy.Copy;
 import com.thoughtworks.librarysystem.copy.CopyBuilder;
 import com.thoughtworks.librarysystem.copy.CopyRepository;
 import com.thoughtworks.librarysystem.copy.CopyStatus;
-import com.thoughtworks.librarysystem.loan.exceptions.CopyNotAvailableException;
+import com.thoughtworks.librarysystem.loan.exceptions.CopyIsNotAvailableException;
 import com.thoughtworks.librarysystem.library.Library;
 import com.thoughtworks.librarysystem.library.LibraryBuilder;
 import com.thoughtworks.librarysystem.library.LibraryRepository;
-import com.thoughtworks.librarysystem.loan.LoanService;
-import com.thoughtworks.librarysystem.loan.Loan;
-import com.thoughtworks.librarysystem.loan.LoanRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -119,7 +116,7 @@ public class LoanServiceTest {
 
     }
 
-    @Test(expected = CopyNotAvailableException.class)
+    @Test(expected = CopyIsNotAvailableException.class)
     public void shouldReturnNullWhenBookIsBorrowed() {
 
         copy = new CopyBuilder()

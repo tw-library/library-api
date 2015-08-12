@@ -1,8 +1,8 @@
 package com.thoughtworks.librarysystem.loan.exceptions;
 
-public class CopyNotAvailableException extends RuntimeException {
+public class CopyIsNotAvailableException extends RuntimeException {
 
-    public CopyNotAvailableException(){
+    public CopyIsNotAvailableException(){
         super("Copy of book requested is not available.");
     }
 

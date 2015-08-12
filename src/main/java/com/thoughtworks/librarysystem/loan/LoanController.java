@@ -1,8 +1,9 @@
 package com.thoughtworks.librarysystem.loan;
 
-import com.thoughtworks.librarysystem.loan.exceptions.CopyNotAvailableException;
+import com.thoughtworks.librarysystem.loan.exceptions.CopyIsNotBorrowedException;
+import com.thoughtworks.librarysystem.loan.exceptions.CopyIsNotAvailableException;
 import com.thoughtworks.librarysystem.commons.ResponseError;
-import com.thoughtworks.librarysystem.loan.exceptions.UserLoanNotIdentifyException;
+import com.thoughtworks.librarysystem.loan.exceptions.LoanNotExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.RepositoryRestController;
 import org.springframework.http.HttpStatus;
@@ -36,27 +37,43 @@ public class LoanController {
     }
 
     @RequestMapping(method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-        public ResponseEntity saveLoan(@RequestBody @Valid Loan loan, BindingResult bindingResults) {
+    public ResponseEntity borrowBook(@RequestBody @Valid Loan loan, BindingResult bindingResults) {
 
-            try {
+        try {
 
-                if (bindingResults.hasErrors()){
+            if (bindingResults.hasErrors()) {
 
-                    List<ResponseError> responseErrors = new ArrayList<>();
-                    for (FieldError fieldError: bindingResults.getFieldErrors()) {
-                        responseErrors.add(new ResponseError(fieldError.getField(), fieldError.getDefaultMessage()));
-                    }
-                    return new ResponseEntity(responseErrors,HttpStatus.PRECONDITION_FAILED);
+                List<ResponseError> responseErrors = new ArrayList<>();
+                for (FieldError fieldError: bindingResults.getFieldErrors()) {
+                    responseErrors.add(new ResponseError(fieldError.getField(), fieldError.getDefaultMessage()));
                 }
-
-                loanService.borrowCopy(loan.getCopy(), loan.getEmail());
-
-            }catch (UserLoanNotIdentifyException | CopyNotAvailableException e){
-                return new ResponseEntity(new ResponseError(e.getMessage()),HttpStatus.PRECONDITION_FAILED);
-            }catch (Exception e){
-                return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+                return new ResponseEntity(responseErrors,HttpStatus.PRECONDITION_FAILED);
             }
 
-            return new ResponseEntity(HttpStatus.CREATED);
+            loanService.borrowCopy(loan.getCopy(), loan.getEmail());
+
+        }catch (CopyIsNotAvailableException e){
+            return new ResponseEntity(new ResponseError(e.getMessage()),HttpStatus.PRECONDITION_FAILED);
+        }catch (Exception e){
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity(HttpStatus.CREATED);
+    }
+
+    @RequestMapping(method = RequestMethod.PATCH, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity returnBook(@RequestBody Loan loan) {
+
+        try {
+
+            loanService.returnCopy(loan);
+
+        }catch (CopyIsNotBorrowedException | LoanNotExistsException e){
+            return new ResponseEntity(new ResponseError(e.getMessage()),HttpStatus.PRECONDITION_FAILED);
+        }catch (Exception e){
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 }

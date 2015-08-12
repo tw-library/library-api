@@ -1,10 +1,10 @@
 package com.thoughtworks.librarysystem.loan;
 
 import com.thoughtworks.librarysystem.Application;
-import com.thoughtworks.librarysystem.commons.ApplicationTestBase;
 import com.thoughtworks.librarysystem.book.Book;
 import com.thoughtworks.librarysystem.book.BookBuilder;
 import com.thoughtworks.librarysystem.book.BookRepository;
+import com.thoughtworks.librarysystem.commons.ApplicationTestBase;
 import com.thoughtworks.librarysystem.copy.Copy;
 import com.thoughtworks.librarysystem.copy.CopyBuilder;
 import com.thoughtworks.librarysystem.copy.CopyRepository;
@@ -27,6 +27,7 @@ import org.springframework.web.context.WebApplicationContext;
 import java.util.HashMap;
 
 import static org.hamcrest.Matchers.is;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -35,105 +36,87 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebAppConfiguration
 @DirtiesContext
 @Transactional
-public class BorrowBookRestControllerTest extends ApplicationTestBase {
+public class ReturnBookRestControllerTest extends ApplicationTestBase {
 
     private MockMvc mockMvc;
-
-    @Autowired
-    CopyRepository copyRepository;
-
-    private Copy copy;
 
     @Autowired
     private WebApplicationContext webApplicationContext;
 
     @Autowired
-    BookRepository bookRepository;
+    private BookRepository bookRepository;
 
-    private Book book;
+    @Autowired
+    private CopyRepository copyRepository;
+
+    @Autowired
+    private LoanService loanService;
+
+    private Copy copyBorrowed;
+
+    private Copy copyAvailable;
+
+    private Loan loan;
+
+    public static final String WHO_BORROWED_THE_BOOK = "tuliolucas.silva@gmail.com";
 
     @Before
     public void setup() throws Exception {
 
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
 
-        book = new BookBuilder()
+        Book book = new BookBuilder()
                 .withAuthor("BOOK 1 AUTHOR EXAMPLE")
                 .withTitle("BOOK 1 NAME EXAMPLE")
                 .build();
 
         bookRepository.save(book);
 
+        copyBorrowed = new CopyBuilder()
+                .withBook(book)
+                .build();
+
+        copyRepository.save(copyBorrowed);
+
+        loan = loanService.borrowCopy(copyBorrowed, WHO_BORROWED_THE_BOOK);
+
+        copyAvailable = new CopyBuilder()
+                            .withBook(book)
+                            .build();
     }
 
     @Test
-    public void shouldLoanBookWhenItIsAvailable() throws  Exception{
-
-        copy = new CopyBuilder()
-                        .withBook(book)
-                        .build();
-
-        copyRepository.save(copy);
+    public void shouldReturnBookWhenItIsBorrowed() throws  Exception{
 
         HashMap<String, Object> inputs = new HashMap<String, Object>();
-        inputs.put("copy", copy);
-        inputs.put("email", "tcruz@thoughtworks.com");
+        inputs.put("id", loan.getId());
 
-        String loanJson = loadFixture("borrow_a_book.json", inputs);
+        String loanJson = loadFixture("return_a_book.json", inputs);
         
-        mockMvc.perform(post("/loans")
+        mockMvc.perform(patch("/loans")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(loanJson))
-                        .andExpect(status().isCreated());
+                        .andExpect(status().isNoContent());
 
-        Copy borrowedBookCopy = copyRepository.findOne(copy.getId());
+        Copy borrowedBookCopy = copyRepository.findOne(copyBorrowed.getId());
 
-        Assert.assertThat(borrowedBookCopy.getStatus(), is(CopyStatus.BORROWED));
+        Assert.assertThat(borrowedBookCopy.getStatus(), is(CopyStatus.AVAILABLE));
 
     }
 
     @Test
-    public void shouldNotLoanBookWhenItIsAlreadyBorrowed() throws  Exception{
-
-        copy = new CopyBuilder()
-                .withBook(book)
-                .withStatus(CopyStatus.BORROWED)
-                .build();
-
-        copyRepository.save(copy);
+    public void shouldNotReturnBookWhenLoanDoesNotExist() throws  Exception{
 
         HashMap<String, Object> inputs = new HashMap<String, Object>();
-        inputs.put("copy", copy);
-        inputs.put("email", "tcruz@thoughtworks.com");
+        inputs.put("id", 0);
 
-        String loanJson = loadFixture("borrow_a_book.json", inputs);
+        String loanJson = loadFixture("return_a_book.json", inputs);
 
-        mockMvc.perform(post("/loans")
+        mockMvc.perform(patch("/loans")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(loanJson))
                 .andExpect(status().isPreconditionFailed());
 
     }
 
-    @Test
-    public void shouldNotLoanBookWhenItIsAvailableButYouDoNotIdentifyYourself() throws  Exception{
-
-        copy = new CopyBuilder()
-                .withBook(book)
-                .build();
-
-        copyRepository.save(copy);
-
-        HashMap<String, Object> inputs = new HashMap<String, Object>();
-        inputs.put("copy", copy);
-        inputs.put("email", "");
-
-
-        String loanJson = loadFixture("borrow_a_book.json", inputs);
-
-        mockMvc.perform(post("/loans")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(loanJson))
-                .andExpect(status().isPreconditionFailed());
-    }
 }
