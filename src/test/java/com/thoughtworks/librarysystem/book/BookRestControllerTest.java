@@ -66,7 +66,6 @@ public class BookRestControllerTest {
                 .withPublisher("Knopf Doubleday Publishing Group")
                 .withPublicationDate("2010-05-25")
                 .withNumberOfPages(576)
-                .withDonator(null)
                 .withImageUrl("http://books.google.com.br/books/content?id=AZ5J6B1-4BoC&printsec=frontcover&img=1&zoom=0&edge=curl&i" +
                             "mgtk=AFLRE70ReZTXNuUwmOr-RLYgzWtcGOlub7PTKwaTz-cvQbtn8TD4HNVIis1iGKknPMWNzqoC0zfLRAu3t5b8wxgfP5FLJ51auTdxj7OZ" +
                             "tDb0QtN9iVgsSCrRr-5IjEBy66whBMJ8fY31&source=gbs_api")
@@ -86,7 +85,6 @@ public class BookRestControllerTest {
                 .withPublisher("Capstone")
                 .withPublicationDate("2006-07-01")
                 .withNumberOfPages(24)
-                .withDonator(null)
                 .withImageUrl("http://books.google.com.br/books/content?id=_ojXNuzgHRcC&printsec=frontcover&img=1&zoom=" +
                             "0&edge=curl&imgtk=AFLRE70fspnCQhDGto11Jg5K01WUluRvPUPA_CjnwthDsp4n5sY5cJ_Lp9AvvmYc80dYqMHAYGg1Mc" +
                             "wJb5XQKIF4lEWYMoDUVqu-Bu9Z9TQH-gbSAbUI99gKnqcZ9EV_K0K7Tefvzii7&source=gbs_api")
@@ -111,7 +109,6 @@ public class BookRestControllerTest {
                 .andExpect(jsonPath("$_embedded.books[0].publisher", is(book1.getPublisher())))
                 .andExpect(jsonPath("$_embedded.books[0].publicationDate", is(book1.getPublicationDate())))
                 .andExpect(jsonPath("$_embedded.books[0].numberOfPages", is(book1.getNumberOfPages())))
-                .andExpect(jsonPath("$_embedded.books[0].donator", is(book1.getDonator())))
                 .andExpect(jsonPath("$_embedded.books[0].imageUrl", is(book1.getImageUrl())))
 
                 .andExpect(jsonPath("$_embedded.books[1].title", is(book2.getTitle())))
@@ -122,7 +119,6 @@ public class BookRestControllerTest {
                 .andExpect(jsonPath("$_embedded.books[1].publisher", is(book2.getPublisher())))
                 .andExpect(jsonPath("$_embedded.books[1].publicationDate", is(book2.getPublicationDate())))
                 .andExpect(jsonPath("$_embedded.books[1].numberOfPages", is(book2.getNumberOfPages())))
-                .andExpect(jsonPath("$_embedded.books[1].donator", is(book2.getDonator())))
                 .andExpect(jsonPath("$_embedded.books[1].imageUrl", is(book2.getImageUrl())));
 
     }

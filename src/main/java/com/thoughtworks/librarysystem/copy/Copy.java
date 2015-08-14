@@ -25,6 +25,9 @@ public class Copy {
     @Column(name="status")
     protected CopyStatus status;
 
+    @Column
+    private String donator;
+
     @JoinColumn(name = "book_id")
     @ManyToOne(fetch=FetchType.EAGER)
     private Book book;

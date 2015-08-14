@@ -17,7 +17,6 @@ public class BookBuilder {
     private String publisher;
     private String publicationDate;
     private Integer numberOfPages;
-    private String donator;
     private String imageUrl;
 
     public Book build(){
@@ -31,7 +30,6 @@ public class BookBuilder {
         book.setPublisher(publisher);
         book.setPublicationDate(publicationDate);
         book.setNumberOfPages(numberOfPages);
-        book.setDonator(donator);
         book.setImageUrl(imageUrl);
 
         return book;

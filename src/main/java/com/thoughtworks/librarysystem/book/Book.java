@@ -45,9 +45,6 @@ public class Book {
     @Column
     private Integer numberOfPages;
 
-    @Column
-    private String donator;
-
     @Column(columnDefinition="text")
     private String imageUrl;
 
