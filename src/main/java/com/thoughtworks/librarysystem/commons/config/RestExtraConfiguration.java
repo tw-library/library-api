@@ -8,11 +8,13 @@ import org.springframework.data.rest.webmvc.config.RepositoryRestMvcConfiguratio
 
 
 @Configuration
-public class RestExtraConfiguration extends RepositoryRestMvcConfiguration{
+public class RestExtraConfiguration extends RepositoryRestMvcConfiguration {
 
     @Override
     protected void configureRepositoryRestConfiguration(RepositoryRestConfiguration config) {
         config.exposeIdsFor(Book.class);
         config.exposeIdsFor(Loan.class);
     }
+
+
 }

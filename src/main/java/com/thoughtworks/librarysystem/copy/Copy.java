@@ -23,7 +23,7 @@ public class Copy {
     private Integer id;
 
     @Column(name="status")
-    protected CopyStatus status;
+    private CopyStatus status;
 
     @Column
     private String donator;
