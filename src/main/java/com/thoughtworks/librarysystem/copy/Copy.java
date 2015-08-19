@@ -6,6 +6,7 @@ import com.thoughtworks.librarysystem.book.Book;
 import com.thoughtworks.librarysystem.library.Library;
 import com.thoughtworks.librarysystem.loan.Loan;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -14,6 +15,7 @@ import java.util.Set;
 @JsonIdentityInfo(property = "id", generator = ObjectIdGenerators.PropertyGenerator.class)
 @Entity
 @Data
+@EqualsAndHashCode(exclude={"loans", "library", "book"})
 public class Copy {
 
     @Id

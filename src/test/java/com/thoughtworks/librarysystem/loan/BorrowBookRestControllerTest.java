@@ -111,7 +111,7 @@ public class BorrowBookRestControllerTest extends ApplicationTestBase {
         mockMvc.perform(post("/loans")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(loanJson))
-                .andExpect(status().isPreconditionFailed());
+                .andExpect(status().isConflict());
 
     }
 
