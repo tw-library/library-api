@@ -9,13 +9,16 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Set;
 
 @Table(name="copy")
 @JsonIdentityInfo(property = "id", generator = ObjectIdGenerators.PropertyGenerator.class)
 @Entity
 @Data
-@EqualsAndHashCode(exclude={"loans", "library", "book"})
+@EqualsAndHashCode(exclude = {"loans", "library", "book", "lastLoan"})
 public class Copy {
 
     @Id
@@ -39,6 +42,28 @@ public class Copy {
     private Library library;
 
     @OneToMany(mappedBy = "copy", cascade = CascadeType.ALL)
-    private Set<Loan> loans;
+    private List<Loan> loans;
+
+    @Transient
+    private Loan lastLoan;
+
+    public Loan getLastLoan() {
+
+        if (loans != null && !loans.isEmpty()) {
+
+            Collections.sort(loans, new Comparator<Loan>() {
+
+                @Override
+                public int compare(Loan o1, Loan o2) {
+                    return o2.getId().compareTo(o1.getId());
+                }
+
+            });
+
+            lastLoan = loans.get(0);
+        }
+
+        return lastLoan;
+    }
 
 }
