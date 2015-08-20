@@ -82,6 +82,7 @@ public class LibraryRestControllerTest {
 
         library = new LibraryBuilder()
                 .withName("belohorizonte")
+                .withSlug("bh")
                 .withCopies(copies)
                 .build();
 
@@ -95,7 +96,8 @@ public class LibraryRestControllerTest {
         mockMvc.perform(get(mountUrlToGetLibrary(library)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaTypes.HAL_JSON))
-                .andExpect(jsonPath("$.name", is(library.getName())));
+                .andExpect(jsonPath("$.name", is(library.getName())))
+                .andExpect(jsonPath("$.slug", is(library.getSlug())));
     }
 
     private String mountUrlToGetLibrary(Library library) {

@@ -13,12 +13,14 @@ import java.util.Set;
 public class LibraryBuilder {
 
     private String name;
+    private String slug;
     private Set<Copy> copies;
 
     public Library build(){
         Library library = new Library();
 
         library.setName(name);
+        library.setSlug(slug);
         library.setCopies(copies);
 
         return library;

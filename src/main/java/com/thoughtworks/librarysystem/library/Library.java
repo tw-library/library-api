@@ -27,6 +27,10 @@ public class Library {
     @Column(name="name")
     private String name;
 
+    @NotBlank
+    @Column(name="slug")
+    private String slug;
+
     @OneToMany(mappedBy = "library")
     private Set<Copy> copies;
 
