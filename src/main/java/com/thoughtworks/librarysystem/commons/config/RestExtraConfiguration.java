@@ -14,7 +14,7 @@ public class RestExtraConfiguration extends RepositoryRestMvcConfiguration {
     protected void configureRepositoryRestConfiguration(RepositoryRestConfiguration config) {
         config.exposeIdsFor(Book.class);
         config.exposeIdsFor(Loan.class);
-        config.setMaxPageSize(1000);
+        config.setDefaultPageSize(1000);
     }
 
 
