@@ -1,7 +1,6 @@
 package com.thoughtworks.librarysystem.book;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Data;
 import org.hibernate.validator.constraints.NotBlank;
