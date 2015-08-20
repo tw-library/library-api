@@ -1,10 +1,12 @@
 package com.thoughtworks.librarysystem.loan;
 
+import com.thoughtworks.librarysystem.commons.EmailValidator;
 import com.thoughtworks.librarysystem.copy.Copy;
 import com.thoughtworks.librarysystem.copy.CopyRepository;
 import com.thoughtworks.librarysystem.copy.CopyStatus;
 import com.thoughtworks.librarysystem.loan.exceptions.CopyIsNotBorrowedException;
 import com.thoughtworks.librarysystem.loan.exceptions.CopyIsNotAvailableException;
+import com.thoughtworks.librarysystem.loan.exceptions.EmailNotFoundException;
 import com.thoughtworks.librarysystem.loan.exceptions.LoanNotExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -20,10 +22,17 @@ public class LoanService {
     @Autowired
     private CopyRepository copyRepository;
 
+    @Autowired
+    private EmailValidator emailValidator;
+
     public Loan borrowCopy(Copy copy, String email) throws CopyIsNotAvailableException {
 
         if (copy.getStatus().equals(CopyStatus.BORROWED)) {
             throw new CopyIsNotAvailableException();
+        }
+
+        if(email == null || !emailValidator.validate(email)) {
+            throw new EmailNotFoundException();
         }
 
         copy.setStatus(CopyStatus.BORROWED);

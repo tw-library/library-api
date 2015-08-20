@@ -12,21 +12,27 @@ import com.thoughtworks.librarysystem.loan.exceptions.CopyIsNotAvailableExceptio
 import com.thoughtworks.librarysystem.library.Library;
 import com.thoughtworks.librarysystem.library.LibraryBuilder;
 import com.thoughtworks.librarysystem.library.LibraryRepository;
+import com.thoughtworks.librarysystem.loan.exceptions.EmailNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNot.not;
 
-
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Application.class)
+@WebAppConfiguration
+@DirtiesContext
+@Transactional
 public class LoanServiceTest {
 
     @Autowired
@@ -88,7 +94,7 @@ public class LoanServiceTest {
         assertThat(loan.getStartDate(), is(not(nullValue())));
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = EmailNotFoundException.class)
     public void shouldNotCreateLoanWithNoIdentify() {
 
         copy = new CopyBuilder()
@@ -102,7 +108,7 @@ public class LoanServiceTest {
 
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = EmailNotFoundException.class)
     public void shouldNotCreateLoanWithInvalidEmail() {
 
         copy = new CopyBuilder()
