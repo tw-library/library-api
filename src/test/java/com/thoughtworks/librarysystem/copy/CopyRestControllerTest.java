@@ -101,15 +101,10 @@ public class CopyRestControllerTest {
                 .andExpect(jsonPath("$_embedded.copies[0].id", is(copy.getId())))
                 .andExpect(jsonPath("$_embedded.copies[0].status", is(copy.getStatus().name())))
                 .andExpect(jsonPath("$_embedded.copies[0].donator", is(copy.getDonator())))
-                .andExpect(jsonPath("$_embedded.copies[0].book.title", is(book.getTitle())))
-                .andExpect(jsonPath("$_embedded.copies[0].book.author", is(book.getAuthor())))
-                .andExpect(jsonPath("$_embedded.copies[0].book.subtitle", is(book.getSubtitle())))
-                .andExpect(jsonPath("$_embedded.copies[0].book.description", is(book.getDescription())))
-                .andExpect(jsonPath("$_embedded.copies[0].book.isbn", is(book.getIsbn())))
-                .andExpect(jsonPath("$_embedded.copies[0].book.publisher", is(book.getPublisher())))
-                .andExpect(jsonPath("$_embedded.copies[0].book.publicationDate", is(book.getPublicationDate())))
-                .andExpect(jsonPath("$_embedded.copies[0].book.numberOfPages", is(book.getNumberOfPages())))
-                .andExpect(jsonPath("$_embedded.copies[0].book.imageUrl", is(book.getImageUrl())));
+                .andExpect(jsonPath("$_embedded.copies[0].title", is(book.getTitle())))
+                .andExpect(jsonPath("$_embedded.copies[0].author", is(book.getAuthor())))
+                .andExpect(jsonPath("$_embedded.copies[0].imageUrl", is(book.getImageUrl())))
+                .andExpect(jsonPath("$_embedded.copies[0].reference", is(book.getId())));
 
     }
 

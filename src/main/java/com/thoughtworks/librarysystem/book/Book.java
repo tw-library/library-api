@@ -49,4 +49,8 @@ public class Book {
     @Column(columnDefinition="text")
     private String imageUrl;
 
+    public Integer getReference() {
+        return id;
+    }
+
 }

@@ -4,7 +4,11 @@ import com.thoughtworks.librarysystem.book.Book;
 import com.thoughtworks.librarysystem.copy.Copy;
 import com.thoughtworks.librarysystem.copy.CopyStatus;
 import com.thoughtworks.librarysystem.loan.Loan;
+import org.hibernate.validator.constraints.NotBlank;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.rest.core.config.Projection;
+
+import javax.persistence.Column;
 
 @Projection(name = "copyWithBookInline", types = { Copy.class })
 public interface CopyWithBookInline {
@@ -15,7 +19,17 @@ public interface CopyWithBookInline {
 
     String getDonator();
 
-    Book getBook();
+    @Value("#{target.book.title}")
+    String getTitle();
+
+    @Value("#{target.book.author}")
+    String getAuthor();
+
+    @Value("#{target.book.imageUrl}")
+    String getImageUrl();
+
+    @Value("#{target.book.id}")
+    Integer getReference();
 
     Loan getLastLoan();
 
