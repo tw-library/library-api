@@ -67,6 +67,7 @@ public class LoanServiceTest {
 
         library = new LibraryBuilder()
                 .withName("belohorizonte")
+                .withSlug("bh")
                 .build();
 
         libraryRepository.save(library);

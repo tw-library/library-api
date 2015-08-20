@@ -28,7 +28,7 @@ public class Library {
     private String name;
 
     @NotBlank
-    @Column(name="slug")
+    @Column(name="slug", unique = true, nullable = false)
     private String slug;
 
     @OneToMany(mappedBy = "library")

@@ -77,6 +77,7 @@ public class CopyRestControllerTest {
 
         Library library = new LibraryBuilder()
                 .withName("belohorizonte")
+                .withSlug("bh")
                 .build();
 
         libraryRepository.save(library);
