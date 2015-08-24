@@ -18,17 +18,17 @@ import java.util.Set;
 public class Library {
 
     @Id
-    @Column(name="id")
+    @Column
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator ="library_gen" )
     @SequenceGenerator(name= "library_gen", sequenceName = "library_gen", allocationSize = 1)
     private Integer id;
 
     @NotBlank
-    @Column(name="name")
+    @Column
     private String name;
 
     @NotBlank
-    @Column(name="slug", unique = true, nullable = false)
+    @Column(unique = true, nullable = false)
     private String slug;
 
     @OneToMany(mappedBy = "library")

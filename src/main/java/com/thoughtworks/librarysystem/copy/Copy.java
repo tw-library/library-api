@@ -22,12 +22,12 @@ import java.util.Set;
 public class Copy {
 
     @Id
-    @Column(name="id")
+    @Column
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator ="copy_gen" )
     @SequenceGenerator(name= "copy_gen", sequenceName = "copy_gen", allocationSize = 1)
     private Integer id;
 
-    @Column(name="status")
+    @Column
     private CopyStatus status;
 
     @Column

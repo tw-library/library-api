@@ -15,7 +15,7 @@ import java.sql.Date;
 public class Loan {
 
     @Id
-    @Column(name = "id")
+    @Column
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator ="loan_gen" )
     @SequenceGenerator(name= "loan_gen", sequenceName = "loan_gen", allocationSize = 1)
     private Integer id;
@@ -32,7 +32,7 @@ public class Loan {
     private Date endDate;
 
     @NotBlank
-    @Column(name = "email")
+    @Column
     @Email
     private String email;
 
