@@ -1,48 +1,42 @@
 package com.thoughtworks.librarysystem.copy;
 
 
+import com.jayway.restassured.module.mockmvc.RestAssuredMockMvc;
 import com.thoughtworks.librarysystem.Application;
 import com.thoughtworks.librarysystem.book.Book;
 import com.thoughtworks.librarysystem.book.BookBuilder;
 import com.thoughtworks.librarysystem.book.BookRepository;
-import com.thoughtworks.librarysystem.commons.ApplicationTestBase;
 import com.thoughtworks.librarysystem.library.Library;
 import com.thoughtworks.librarysystem.library.LibraryBuilder;
 import com.thoughtworks.librarysystem.library.LibraryRepository;
 import com.thoughtworks.librarysystem.loan.Loan;
 import com.thoughtworks.librarysystem.loan.LoanService;
-import org.hamcrest.core.Is;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.hateoas.MediaTypes;
-import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import java.util.HashMap;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
+
+import static com.jayway.restassured.RestAssured.*;
+import static com.jayway.restassured.matcher.RestAssuredMatchers.*;
+import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Application.class)
 @WebAppConfiguration
 @DirtiesContext
-@Transactional
-public class CopyRestControllerTest extends ApplicationTestBase {
-
-    private MockMvc mockMvc;
+public class CopyWithLastLoanTest {
 
     @Autowired
     BookRepository bookRepository;
@@ -62,10 +56,15 @@ public class CopyRestControllerTest extends ApplicationTestBase {
     @Autowired
     private WebApplicationContext webApplicationContext;
 
+    private MockMvc mockMvc;
+
+    @Autowired
+    private WebApplicationContext context;
+
     @Before
     public void setup() throws Exception {
 
-        this.mockMvc = webAppContextSetup(webApplicationContext).build();
+        mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
 
         book = new BookBuilder()
                 .withTitle("Flowers")
@@ -80,15 +79,14 @@ public class CopyRestControllerTest extends ApplicationTestBase {
                 .withPublicationDate("2006-07-01")
                 .withNumberOfPages(24)
                 .withImageUrl("http://books.google.com.br/books/content?id=_ojXNuzgHRcC&printsec=frontcover&img=1&zoom=" +
-                            "0&edge=curl&imgtk=AFLRE70fspnCQhDGto11Jg5K01WUluRvPUPA_CjnwthDsp4n5sY5cJ_Lp9AvvmYc80dYqMHAYGg1Mc" +
-                            "wJb5XQKIF4lEWYMoDUVqu-Bu9Z9TQH-gbSAbUI99gKnqcZ9EV_K0K7Tefvzii7&source=gbs_api")
+                        "0&edge=curl&imgtk=AFLRE70fspnCQhDGto11Jg5K01WUluRvPUPA_CjnwthDsp4n5sY5cJ_Lp9AvvmYc80dYqMHAYGg1Mc" +
+                        "wJb5XQKIF4lEWYMoDUVqu-Bu9Z9TQH-gbSAbUI99gKnqcZ9EV_K0K7Tefvzii7&source=gbs_api")
                 .build();
 
         bookRepository.save(book);
 
         Library library = new LibraryBuilder()
                 .withName("belohorizonte")
-                .withSlug("bh")
                 .build();
 
         libraryRepository.save(library);
@@ -103,19 +101,24 @@ public class CopyRestControllerTest extends ApplicationTestBase {
     }
 
     @Test
-    public void shouldListAllCopiesWithBookInline() throws Exception {
+    public void shouldListLastLoanByACopy() throws Exception {
 
-            mockMvc.perform(get("/copies"))
+        Loan loan = loanService.borrowCopy(copy.getId(), "tcruz@thoughtworks.com");
+
+        loanService.returnCopy(loan.getId());
+
+        Loan anotherLoan = loanService.borrowCopy(copy.getId(), "tcruz@thoughtworks.com");
+
+        mockMvc.perform(get(mountUrlToGetCopy(copy)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaTypes.HAL_JSON))
-                .andExpect(jsonPath("$_embedded.copies", hasSize(1)))
-                .andExpect(jsonPath("$_embedded.copies[0].id", is(copy.getId())))
-                .andExpect(jsonPath("$_embedded.copies[0].status", is(copy.getStatus().name())))
-                .andExpect(jsonPath("$_embedded.copies[0].donator", is(copy.getDonator())))
-                .andExpect(jsonPath("$_embedded.copies[0].title", is(book.getTitle())))
-                .andExpect(jsonPath("$_embedded.copies[0].author", is(book.getAuthor())))
-                .andExpect(jsonPath("$_embedded.copies[0].imageUrl", is(book.getImageUrl())))
-                .andExpect(jsonPath("$_embedded.copies[0].reference", is(book.getId())));
+                .andExpect(jsonPath("$.lastLoan.id", is(anotherLoan.getId())));
+
     }
+
+    private String mountUrlToGetCopy(Copy copy) {
+        return "/copies/" + copy.getId();
+    }
+
 
 }

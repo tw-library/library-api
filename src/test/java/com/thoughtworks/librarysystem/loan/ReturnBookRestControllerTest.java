@@ -78,7 +78,7 @@ public class ReturnBookRestControllerTest extends ApplicationTestBase {
 
         copyRepository.save(copyBorrowed);
 
-        loan = loanService.borrowCopy(copyBorrowed, WHO_BORROWED_THE_BOOK);
+        loan = loanService.borrowCopy(copyBorrowed.getId(), WHO_BORROWED_THE_BOOK);
 
         copyAvailable = new CopyBuilder()
                             .withBook(book)

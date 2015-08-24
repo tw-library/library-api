@@ -5,6 +5,8 @@ import com.thoughtworks.librarysystem.copy.CopyStatus;
 import com.thoughtworks.librarysystem.loan.Loan;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.rest.core.config.Projection;
+import javax.persistence.Column;
+import java.util.List;
 
 @Projection(name = "copyWithBookInline", types = { Copy.class })
 public interface CopyWithBookInline {
@@ -28,5 +30,7 @@ public interface CopyWithBookInline {
     Integer getReference();
 
     Loan getLastLoan();
+
+    List<Loan> getLoans();
 
 }

@@ -84,7 +84,7 @@ public class LoanServiceTest {
 
         copyRepository.save(copy);
 
-        loanService.borrowCopy(copy, "tcruz@thoughtworks.com");
+        loanService.borrowCopy(copy.getId(), "tcruz@thoughtworks.com");
 
         Loan loan = loanRepository.findByCopy(copy).get(0);
         Copy borrowedCopy = copyRepository.findOne(copy.getId());
@@ -105,7 +105,7 @@ public class LoanServiceTest {
 
         copyRepository.save(copy);
 
-        assertThat(loanService.borrowCopy(copy, null), is(nullValue()));
+        assertThat(loanService.borrowCopy(copy.getId(), null), is(nullValue()));
 
     }
 
@@ -119,7 +119,7 @@ public class LoanServiceTest {
 
         copyRepository.save(copy);
 
-        assertThat(loanService.borrowCopy(copy, "test"), is(nullValue()));
+        assertThat(loanService.borrowCopy(copy.getId(), "test"), is(nullValue()));
 
     }
 
@@ -134,6 +134,6 @@ public class LoanServiceTest {
 
         copyRepository.save(copy);
 
-        loanService.borrowCopy(copy, "tcruz@thoughtworks.com");
+        loanService.borrowCopy(copy.getId(), "tcruz@thoughtworks.com");
     }
 }

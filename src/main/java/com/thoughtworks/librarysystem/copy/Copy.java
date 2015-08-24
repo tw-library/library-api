@@ -7,6 +7,7 @@ import com.thoughtworks.librarysystem.library.Library;
 import com.thoughtworks.librarysystem.loan.Loan;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
 import java.util.Collections;
@@ -33,7 +34,8 @@ public class Copy {
     @Column
     private String donator;
 
-    @JoinColumn(name = "book_id")
+
+    @JoinColumn(name = "book_id", nullable = false)
     @ManyToOne(fetch=FetchType.EAGER)
     private Book book;
 
@@ -41,7 +43,7 @@ public class Copy {
     @ManyToOne(fetch=FetchType.EAGER)
     private Library library;
 
-    @OneToMany(mappedBy = "copy", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "copy", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Loan> loans;
 
     @Transient
@@ -49,9 +51,9 @@ public class Copy {
 
     public Loan getLastLoan() {
 
-        if (loans != null && !loans.isEmpty()) {
+        if (getLoans() != null && !getLoans().isEmpty()) {
 
-            Collections.sort(loans, new Comparator<Loan>() {
+            Collections.sort(getLoans(), new Comparator<Loan>() {
 
                 @Override
                 public int compare(Loan o1, Loan o2) {
@@ -60,7 +62,7 @@ public class Copy {
 
             });
 
-            lastLoan = loans.get(0);
+            lastLoan = getLoans().get(0);
         }
 
         return lastLoan;

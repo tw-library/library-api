@@ -20,8 +20,8 @@ public class Loan {
     @SequenceGenerator(name= "loan_gen", sequenceName = "loan_gen", allocationSize = 1)
     private Integer id;
 
-    @JoinColumn(name = "copy_id")
     @ManyToOne(fetch=FetchType.EAGER)
+    @JoinColumn(name="copy_id")
     private Copy copy;
 
     @Column(name = "start_date")

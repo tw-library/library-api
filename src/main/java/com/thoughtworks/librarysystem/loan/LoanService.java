@@ -25,7 +25,9 @@ public class LoanService {
     @Autowired
     private EmailValidator emailValidator;
 
-    public Loan borrowCopy(Copy copy, String email) throws CopyIsNotAvailableException {
+    public Loan borrowCopy(Integer copyId, String email) throws CopyIsNotAvailableException {
+
+        Copy copy = copyRepository.findOne(copyId);
 
         if (copy.getStatus().equals(CopyStatus.BORROWED)) {
             throw new CopyIsNotAvailableException();
@@ -47,19 +49,15 @@ public class LoanService {
 
     }
 
-    public Loan returnCopy(Loan loan) throws CopyIsNotBorrowedException, LoanNotExistsException {
+    public Loan returnCopy(Integer loanId) throws CopyIsNotBorrowedException, LoanNotExistsException {
 
-        loan = loanRepository.findOne(loan.getId());
+        Loan loan = loanRepository.findOne(loanId);
 
-        if(loan == null){
+        if(loan == null) {
             throw new LoanNotExistsException();
         }
 
         Copy copy = loan.getCopy();
-
-        if (copy.getStatus().equals(CopyStatus.AVAILABLE)) {
-            throw new CopyIsNotBorrowedException();
-        }
 
         copy.setStatus(CopyStatus.AVAILABLE);
         copyRepository.save(copy);
