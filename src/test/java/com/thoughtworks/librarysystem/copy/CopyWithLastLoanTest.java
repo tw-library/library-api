@@ -87,6 +87,7 @@ public class CopyWithLastLoanTest {
 
         Library library = new LibraryBuilder()
                 .withName("belohorizonte")
+                .withSlug("bh")
                 .build();
 
         libraryRepository.save(library);
