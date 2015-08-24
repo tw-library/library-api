@@ -24,7 +24,7 @@ public class Copy {
     @Id
     @Column(name="id")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator ="copy_gen" )
-    @SequenceGenerator(name= "copy_gen", sequenceName = "copy_gen")
+    @SequenceGenerator(name= "copy_gen", sequenceName = "copy_gen", allocationSize = 1)
     private Integer id;
 
     @Column(name="status")

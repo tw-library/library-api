@@ -20,7 +20,7 @@ public class Library {
     @Id
     @Column(name="id")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator ="library_gen" )
-    @SequenceGenerator(name= "library_gen", sequenceName = "library_gen")
+    @SequenceGenerator(name= "library_gen", sequenceName = "library_gen", allocationSize = 1)
     private Integer id;
 
     @NotBlank
