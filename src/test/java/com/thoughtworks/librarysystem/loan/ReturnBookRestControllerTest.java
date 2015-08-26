@@ -86,7 +86,6 @@ public class ReturnBookRestControllerTest extends ApplicationTestBase {
         Copy borrowedBookCopy = copyRepository.findOne(copyBorrowed.getId());
 
         Assert.assertThat(borrowedBookCopy.getStatus(), is(CopyStatus.AVAILABLE));
-
     }
 
     @Test
@@ -99,7 +98,7 @@ public class ReturnBookRestControllerTest extends ApplicationTestBase {
         mockMvc.perform(patch(mountUrlToPatchLoan(invalidLoan))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{}"))
-                .andExpect(status().isPreconditionFailed());
+                .andExpect(status().isPreconditionRequired());
 
     }
 

@@ -1,6 +1,5 @@
 package com.thoughtworks.librarysystem.loan;
 
-import com.thoughtworks.librarysystem.loan.exceptions.CopyIsNotBorrowedException;
 import com.thoughtworks.librarysystem.loan.exceptions.CopyIsNotAvailableException;
 import com.thoughtworks.librarysystem.commons.ResponseError;
 import com.thoughtworks.librarysystem.loan.exceptions.LoanNotExistsException;
@@ -65,9 +64,9 @@ public class LoanController {
 
             loanService.returnCopy(loanId);
 
-        }catch (CopyIsNotBorrowedException | LoanNotExistsException e){
-            return new ResponseEntity(new ResponseError(e.getMessage()),HttpStatus.PRECONDITION_FAILED);
-        }catch (Exception e){
+        }catch (LoanNotExistsException  e) {
+            return new ResponseEntity(new ResponseError(e.getMessage()),HttpStatus.PRECONDITION_REQUIRED);
+        } catch (Exception e) {
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 

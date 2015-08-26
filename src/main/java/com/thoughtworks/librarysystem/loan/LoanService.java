@@ -4,7 +4,6 @@ import com.thoughtworks.librarysystem.commons.EmailValidator;
 import com.thoughtworks.librarysystem.copy.Copy;
 import com.thoughtworks.librarysystem.copy.CopyRepository;
 import com.thoughtworks.librarysystem.copy.CopyStatus;
-import com.thoughtworks.librarysystem.loan.exceptions.CopyIsNotBorrowedException;
 import com.thoughtworks.librarysystem.loan.exceptions.CopyIsNotAvailableException;
 import com.thoughtworks.librarysystem.loan.exceptions.EmailNotFoundException;
 import com.thoughtworks.librarysystem.loan.exceptions.LoanNotExistsException;
@@ -49,7 +48,7 @@ public class LoanService {
 
     }
 
-    public Loan returnCopy(Integer loanId) throws CopyIsNotBorrowedException, LoanNotExistsException {
+    public Loan returnCopy(Integer loanId) throws LoanNotExistsException {
 
         Loan loan = loanRepository.findOne(loanId);
 
