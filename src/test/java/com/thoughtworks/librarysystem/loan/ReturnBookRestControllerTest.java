@@ -52,18 +52,16 @@ public class ReturnBookRestControllerTest extends ApplicationTestBase {
     @Autowired
     private LoanService loanService;
 
-    private Copy copyBorrowed;
-
-    private Copy copyAvailable;
-
-    private Loan loan;
-
-    public static final String WHO_BORROWED_THE_BOOK = "tuliolucas.silva@gmail.com";
-
     @Before
     public void setup() throws Exception {
-
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+    }
+
+    @Test
+    public void shouldReturnBookWhenItIsBorrowed() throws  Exception{
+
+        Copy copyBorrowed;
+        Loan loan;
 
         Book book = new BookBuilder()
                 .withAuthor("BOOK 1 AUTHOR EXAMPLE")
@@ -78,25 +76,12 @@ public class ReturnBookRestControllerTest extends ApplicationTestBase {
 
         copyRepository.save(copyBorrowed);
 
-        loan = loanService.borrowCopy(copyBorrowed.getId(), WHO_BORROWED_THE_BOOK);
+        loan = loanService.borrowCopy(copyBorrowed.getId(), "tuliolucas.silva@gmail.com");
 
-        copyAvailable = new CopyBuilder()
-                            .withBook(book)
-                            .build();
-    }
-
-    @Test
-    public void shouldReturnBookWhenItIsBorrowed() throws  Exception{
-
-        HashMap<String, Object> inputs = new HashMap<String, Object>();
-        inputs.put("id", loan.getId());
-
-        String loanJson = loadFixture("return_a_book.json", inputs);
-        
-        mockMvc.perform(patch("/loans")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(loanJson))
-                        .andExpect(status().isNoContent());
+        mockMvc.perform(patch(mountUrlToPatchLoan(loan))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("{}"))
+                            .andExpect(status().isNoContent());
 
         Copy borrowedBookCopy = copyRepository.findOne(copyBorrowed.getId());
 
@@ -107,16 +92,18 @@ public class ReturnBookRestControllerTest extends ApplicationTestBase {
     @Test
     public void shouldNotReturnBookWhenLoanDoesNotExist() throws  Exception{
 
-        HashMap<String, Object> inputs = new HashMap<String, Object>();
-        inputs.put("id", 0);
+        Loan invalidLoan = new LoanBuilder()
+                                .withId(0)
+                                .build();
 
-        String loanJson = loadFixture("return_a_book.json", inputs);
-
-        mockMvc.perform(patch("/loans")
+        mockMvc.perform(patch(mountUrlToPatchLoan(invalidLoan))
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(loanJson))
+                .content("{}"))
                 .andExpect(status().isPreconditionFailed());
 
     }
 
+    private String mountUrlToPatchLoan(Loan loan) {
+        return "/loans/" + loan.getId();
+    }
 }

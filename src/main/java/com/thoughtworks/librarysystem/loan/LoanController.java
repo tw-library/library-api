@@ -12,10 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
@@ -61,12 +58,12 @@ public class LoanController {
         return new ResponseEntity(HttpStatus.CREATED);
     }
 
-    @RequestMapping(method = RequestMethod.PATCH, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity returnBook(@RequestBody Loan loan) {
+    @RequestMapping(value = "/{loanId}", method = RequestMethod.PATCH, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity returnBook(@PathVariable Integer loanId, @RequestBody Loan loan, BindingResult bindingResult) {
 
         try {
 
-            loanService.returnCopy(loan.getId());
+            loanService.returnCopy(loanId);
 
         }catch (CopyIsNotBorrowedException | LoanNotExistsException e){
             return new ResponseEntity(new ResponseError(e.getMessage()),HttpStatus.PRECONDITION_FAILED);

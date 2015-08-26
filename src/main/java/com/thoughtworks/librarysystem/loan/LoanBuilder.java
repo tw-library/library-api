@@ -18,6 +18,7 @@ import java.sql.Date;
 @Wither
 public class LoanBuilder {
 
+    private Integer id;
     private Copy copy;
     private Date startDate;
     private Date endDate;
@@ -31,6 +32,8 @@ public class LoanBuilder {
         loan.setStartDate(startDate);
         loan.setEndDate(endDate);
         loan.setEmail(email);
+        loan.setId(id);
+
 
         return loan;
     }
