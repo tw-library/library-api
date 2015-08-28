@@ -6,5 +6,5 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 @RepositoryRestResource(excerptProjection = CopyWithBookInline.class)
-public interface CopyRepository extends CrudRepository<Copy, Integer> {
+public interface CopyRepository extends PagingAndSortingRepository<Copy, Integer> {
 }
