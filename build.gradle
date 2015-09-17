@@ -1,3 +1,20 @@
+group 'com.thoughtworks.librarysystem'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'jacoco'
+apply plugin: 'spring-boot'
+
+ext {
+    expectedLineCoverage = 50
+    expectedBranchCoverage = 60
+}
+
+jar {
+    baseName = 'librarysystem-api'
+    version = '0.1.0'
+}
+
 loadConfiguration()
 
 def loadConfiguration() {
@@ -8,9 +25,6 @@ def loadConfiguration() {
     println ">>>>>>> Environment is set to $environment"
 }
 
-group 'com.thoughtworks.librarysystem'
-version '1.0-SNAPSHOT'
-
 buildscript {
     repositories {
         mavenCentral()
@@ -18,14 +32,6 @@ buildscript {
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:1.2.4.RELEASE")
     }
-}
-
-apply plugin: 'java'
-apply plugin: 'spring-boot'
-
-jar {
-    baseName = 'librarysystem-api'
-    version = '0.1.0'
 }
 
 repositories {
@@ -80,3 +86,23 @@ task copyConfiguration << {
 processResources.dependsOn copyConfiguration
 
 task stage(dependsOn: ['clean', 'installApp'])
+
+task checkTestCoverage << {
+    def coverageReportPath = "build/reports/jacoco/test/html/index.html"
+    def coverageFile = new File(coverageReportPath)
+    def matcher = ( coverageFile.text =~ /<tfoot>(.*)<\/tfoot>/ )
+    def coverageString = new XmlParser().parseText(matcher[0][0])
+
+    def lineCoverageString = coverageString.tr.td[2].text()
+    def branchCoverageString = coverageString.tr.td[4].text()
+    def actualLineCoverage=  lineCoverageString.substring(0,lineCoverageString.length() - 1).toInteger()
+    def actualBranchCoverage=  branchCoverageString.substring(0,branchCoverageString.length() - 1).toInteger()
+
+    logger.quiet('\n\nCode line coverage is ' +actualLineCoverage+'%')
+    logger.quiet('Code branch coverage is ' +actualBranchCoverage+'%')
+    logger.quiet('Form more info check '+coverageReportPath+'\n\n')
+}
+
+checkTestCoverage.dependsOn jacocoTestReport
+
+test.finalizedBy checkTestCoverage
