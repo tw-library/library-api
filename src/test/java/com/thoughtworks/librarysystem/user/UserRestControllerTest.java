@@ -47,9 +47,7 @@ public class UserRestControllerTest extends ApplicationTestBase {
 
     @Before
     public void setup() throws Exception {
-
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-
     }
 
     @Test
