@@ -5,6 +5,8 @@ apply plugin: 'java'
 apply plugin: 'jacoco'
 apply plugin: 'spring-boot'
 
+applicationDefaultJvmArgs = ["-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8081"]
+
 ext {
     expectedLineCoverage = 50
     expectedBranchCoverage = 60
