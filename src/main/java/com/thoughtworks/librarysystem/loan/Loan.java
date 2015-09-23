@@ -3,6 +3,8 @@ package com.thoughtworks.librarysystem.loan;
 import com.thoughtworks.librarysystem.copy.Copy;
 import com.thoughtworks.librarysystem.user.User;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -13,6 +15,8 @@ import java.sql.Date;
 @Entity
 @Table(name = "loan")
 @Data
+@EqualsAndHashCode(exclude = {"user" , "email"})
+@ToString(exclude = {"user", "email"})
 public class Loan {
 
     @Id
@@ -42,5 +46,15 @@ public class Loan {
     @PrePersist
     void onCreate() {
         this.startDate = new Date(System.currentTimeMillis());
+    }
+
+    public String getEmail(){
+
+        if(email == null && getUser() != null) {
+            return getUser().getEmail();
+
+        }else {
+            return email;
+        }
     }
 }

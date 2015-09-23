@@ -7,6 +7,7 @@ import com.thoughtworks.librarysystem.library.Library;
 import com.thoughtworks.librarysystem.loan.Loan;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
@@ -20,6 +21,7 @@ import java.util.Set;
 @Entity
 @Data
 @EqualsAndHashCode(exclude = {"loans", "library", "book", "lastLoan"})
+@ToString(exclude = {"loans", "library", "lastLoan"})
 public class Copy {
 
     @Id
