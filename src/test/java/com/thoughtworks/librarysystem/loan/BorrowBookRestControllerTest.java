@@ -9,6 +9,12 @@ import com.thoughtworks.librarysystem.copy.Copy;
 import com.thoughtworks.librarysystem.copy.CopyBuilder;
 import com.thoughtworks.librarysystem.copy.CopyRepository;
 import com.thoughtworks.librarysystem.copy.CopyStatus;
+import com.thoughtworks.librarysystem.library.Library;
+import com.thoughtworks.librarysystem.library.LibraryBuilder;
+import com.thoughtworks.librarysystem.library.LibraryRepository;
+import com.thoughtworks.librarysystem.user.User;
+import com.thoughtworks.librarysystem.user.UserBuilder;
+import com.thoughtworks.librarysystem.user.UserRepository;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,7 +48,14 @@ public class BorrowBookRestControllerTest extends ApplicationTestBase {
     @Autowired
     CopyRepository copyRepository;
 
+    @Autowired
+    UserRepository userRepository;
+
+    @Autowired
+    LibraryRepository libraryRepository;
+
     private Copy copy;
+    private User user;
 
     @Autowired
     private WebApplicationContext webApplicationContext;
@@ -69,15 +82,31 @@ public class BorrowBookRestControllerTest extends ApplicationTestBase {
     @Test
     public void shouldLoanBookWhenItIsAvailable() throws  Exception{
 
+        Library library = new LibraryBuilder()
+                .withName("Teste")
+                .withSlug("T")
+                .build();
+
+        libraryRepository.save(library);
+
+
         copy = new CopyBuilder()
                         .withBook(book)
+                        .withLibrary(library)
                         .build();
 
         copyRepository.save(copy);
 
+        user = new UserBuilder()
+                .withEmail("tcruz@thoughtworks.com")
+                .withName("Tulio")
+                .build();
+
+        userRepository.save(user);
+
         HashMap<String, Object> inputs = new HashMap<String, Object>();
         inputs.put("copy", copy);
-        inputs.put("email", "tcruz@thoughtworks.com");
+        inputs.put("email", user.getEmail());
 
         String loanJson = loadFixture("borrow_a_book.json", inputs);
         
@@ -100,11 +129,18 @@ public class BorrowBookRestControllerTest extends ApplicationTestBase {
                 .withStatus(CopyStatus.BORROWED)
                 .build();
 
+        user = new UserBuilder()
+                .withEmail("tcruz@thoughtworks.com")
+                .withName("Tulio")
+                .build();
+
+        userRepository.save(user);
+
         copyRepository.save(copy);
 
         HashMap<String, Object> inputs = new HashMap<String, Object>();
         inputs.put("copy", copy);
-        inputs.put("email", "tcruz@thoughtworks.com");
+        inputs.put("email", user.getEmail());
 
         String loanJson = loadFixture("borrow_a_book.json", inputs);
 
@@ -122,11 +158,18 @@ public class BorrowBookRestControllerTest extends ApplicationTestBase {
                 .withBook(book)
                 .build();
 
+        user = new UserBuilder()
+                .withEmail("")
+                .withName("Tulio")
+                .build();
+
+        userRepository.save(user);
+
         copyRepository.save(copy);
 
         HashMap<String, Object> inputs = new HashMap<String, Object>();
         inputs.put("copy", copy);
-        inputs.put("email", "");
+        inputs.put("user", user);
 
 
         String loanJson = loadFixture("borrow_a_book.json", inputs);

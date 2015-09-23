@@ -18,7 +18,6 @@ public class User {
     @SequenceGenerator(name= "users_gen", sequenceName = "users_gen", allocationSize = 1)
     private Integer id;
 
-
     @NotNull
     @NotBlank
     @Email

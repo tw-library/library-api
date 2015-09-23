@@ -9,6 +9,12 @@ import com.thoughtworks.librarysystem.copy.Copy;
 import com.thoughtworks.librarysystem.copy.CopyBuilder;
 import com.thoughtworks.librarysystem.copy.CopyRepository;
 import com.thoughtworks.librarysystem.copy.CopyStatus;
+import com.thoughtworks.librarysystem.library.Library;
+import com.thoughtworks.librarysystem.library.LibraryBuilder;
+import com.thoughtworks.librarysystem.library.LibraryRepository;
+import com.thoughtworks.librarysystem.user.User;
+import com.thoughtworks.librarysystem.user.UserBuilder;
+import com.thoughtworks.librarysystem.user.UserRepository;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -50,6 +56,13 @@ public class ReturnBookRestControllerTest extends ApplicationTestBase {
     private CopyRepository copyRepository;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private LibraryRepository libraryRepository;
+
+
+    @Autowired
     private LoanService loanService;
 
     @Before
@@ -62,6 +75,12 @@ public class ReturnBookRestControllerTest extends ApplicationTestBase {
 
         Copy copyBorrowed;
         Loan loan;
+        Library library = new LibraryBuilder()
+                .withName("Teste")
+                .withSlug("T")
+                .build();
+
+        libraryRepository.save(library);
 
         Book book = new BookBuilder()
                 .withAuthor("BOOK 1 AUTHOR EXAMPLE")
@@ -72,11 +91,20 @@ public class ReturnBookRestControllerTest extends ApplicationTestBase {
 
         copyBorrowed = new CopyBuilder()
                 .withBook(book)
+                .withLibrary(library)
                 .build();
 
         copyRepository.save(copyBorrowed);
 
-        loan = loanService.borrowCopy(copyBorrowed.getId(), "tuliolucas.silva@gmail.com");
+        User user = new UserBuilder()
+                .withEmail("tcruz@thoughtworks.com")
+                .withName("Tulio")
+                .build();
+
+        userRepository.save(user);
+
+
+        loan = loanService.borrowCopy(copyBorrowed.getId(), user.getEmail());
 
         mockMvc.perform(patch(mountUrlToPatchLoan(loan))
                             .contentType(MediaType.APPLICATION_JSON)

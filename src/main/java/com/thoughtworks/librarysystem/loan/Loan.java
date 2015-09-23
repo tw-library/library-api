@@ -1,6 +1,7 @@
 package com.thoughtworks.librarysystem.loan;
 
 import com.thoughtworks.librarysystem.copy.Copy;
+import com.thoughtworks.librarysystem.user.User;
 import lombok.Data;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
@@ -31,9 +32,11 @@ public class Loan {
     @Column(name = "end_date")
     private Date endDate;
 
-    @NotBlank
-    @Column
-    @Email
+    @ManyToOne(fetch=FetchType.EAGER)
+    @JoinColumn(name="user_id")
+    private User user;
+
+    @Transient
     private String email;
 
     @PrePersist

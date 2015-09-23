@@ -2,6 +2,7 @@ package com.thoughtworks.librarysystem.loan;
 
 import com.thoughtworks.librarysystem.copy.Copy;
 import com.thoughtworks.librarysystem.library.Library;
+import com.thoughtworks.librarysystem.user.User;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Wither;
@@ -22,7 +23,7 @@ public class LoanBuilder {
     private Copy copy;
     private Date startDate;
     private Date endDate;
-    private String email;
+    private User user;
 
     public Loan build(){
 
@@ -31,9 +32,9 @@ public class LoanBuilder {
         loan.setCopy(copy);
         loan.setStartDate(startDate);
         loan.setEndDate(endDate);
-        loan.setEmail(email);
+        loan.setUser(user);
         loan.setId(id);
-
+        loan.setUser(user);
 
         return loan;
     }

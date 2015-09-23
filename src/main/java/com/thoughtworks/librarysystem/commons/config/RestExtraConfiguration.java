@@ -2,6 +2,7 @@ package com.thoughtworks.librarysystem.commons.config;
 
 import com.thoughtworks.librarysystem.book.Book;
 import com.thoughtworks.librarysystem.loan.Loan;
+import com.thoughtworks.librarysystem.user.User;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
 import org.springframework.data.rest.webmvc.config.RepositoryRestMvcConfiguration;

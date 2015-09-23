@@ -4,13 +4,14 @@ import com.thoughtworks.librarysystem.commons.EmailValidator;
 import com.thoughtworks.librarysystem.copy.Copy;
 import com.thoughtworks.librarysystem.copy.CopyRepository;
 import com.thoughtworks.librarysystem.copy.CopyStatus;
-import com.thoughtworks.librarysystem.loan.exceptions.CopyIsNotAvailableException;
-import com.thoughtworks.librarysystem.loan.exceptions.EmailNotFoundException;
-import com.thoughtworks.librarysystem.loan.exceptions.LoanNotExistsException;
+import com.thoughtworks.librarysystem.loan.exceptions.*;
+import com.thoughtworks.librarysystem.user.User;
+import com.thoughtworks.librarysystem.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.sql.Date;
+import java.util.List;
 
 @Component
 public class LoanService {
@@ -20,6 +21,9 @@ public class LoanService {
 
     @Autowired
     private CopyRepository copyRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private EmailValidator emailValidator;
@@ -32,16 +36,20 @@ public class LoanService {
             throw new CopyIsNotAvailableException();
         }
 
-        if(email == null || !emailValidator.validate(email)) {
-            throw new EmailNotFoundException();
+        List<User> users = userRepository.findByEmail(email);
+
+        if(users == null || users.isEmpty()) {
+            throw new UserNotFoundException();
         }
+
+        User user = users.get(0);
 
         copy.setStatus(CopyStatus.BORROWED);
         copyRepository.save(copy);
 
         Loan loan = new LoanBuilder()
                 .withCopy(copy)
-                .withEmail(email)
+                .withUser(user)
                 .build();
 
         return loanRepository.save(loan);

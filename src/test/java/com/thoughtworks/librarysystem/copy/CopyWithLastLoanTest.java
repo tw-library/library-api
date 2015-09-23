@@ -11,6 +11,9 @@ import com.thoughtworks.librarysystem.library.LibraryBuilder;
 import com.thoughtworks.librarysystem.library.LibraryRepository;
 import com.thoughtworks.librarysystem.loan.Loan;
 import com.thoughtworks.librarysystem.loan.LoanService;
+import com.thoughtworks.librarysystem.user.User;
+import com.thoughtworks.librarysystem.user.UserBuilder;
+import com.thoughtworks.librarysystem.user.UserRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,6 +49,10 @@ public class CopyWithLastLoanTest {
 
     @Autowired
     CopyRepository copyRepository;
+
+
+    @Autowired
+    UserRepository userRepository;
 
     @Autowired
     private LoanService loanService;
@@ -104,11 +111,18 @@ public class CopyWithLastLoanTest {
     @Test
     public void shouldListLastLoanByACopy() throws Exception {
 
-        Loan loan = loanService.borrowCopy(copy.getId(), "tcruz@thoughtworks.com");
+        User user = new UserBuilder()
+                .withEmail("tcruz@thoughtworks.com")
+                .withName("Tulio")
+                .build();
+
+        userRepository.save(user);
+
+        Loan loan = loanService.borrowCopy(copy.getId(), user.getEmail());
 
         loanService.returnCopy(loan.getId());
 
-        Loan anotherLoan = loanService.borrowCopy(copy.getId(), "tcruz@thoughtworks.com");
+        Loan anotherLoan = loanService.borrowCopy(copy.getId(), user.getEmail());
 
         mockMvc.perform(get(mountUrlToGetCopy(copy)))
                 .andExpect(status().isOk())

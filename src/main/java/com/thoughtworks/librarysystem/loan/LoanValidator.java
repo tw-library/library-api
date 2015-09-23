@@ -1,6 +1,7 @@
 package com.thoughtworks.librarysystem.loan;
 
 import com.thoughtworks.librarysystem.commons.EmailValidator;
+import com.thoughtworks.librarysystem.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.*;
@@ -8,9 +9,9 @@ import org.springframework.validation.*;
 @Component
 public class LoanValidator implements Validator {
 
-    public static final String EMAIL_ERROR_MESSAGE = "Email is required to make a Loan";
-    public static final String EMAIL_FIELD_NAME = "email";
-    public static final String EMAIL_ERROR_CODE = "loan.id.invalid";
+    public static final String USER_ERROR_MESSAGE = "User with valid email is required to make a Loan";
+    public static final String USER_FIELD_NAME = "user";
+    public static final String USER_ERROR_CODE = "loan.id.invalid";
 
     @Autowired
     private EmailValidator emailValidator;
@@ -26,10 +27,8 @@ public class LoanValidator implements Validator {
 
         Loan loan = (Loan)target;
 
-        String email = loan.getEmail();
-
-        if(email == null || !emailValidator.validate(loan.getEmail())) {
-            errors.rejectValue(EMAIL_FIELD_NAME, EMAIL_ERROR_CODE, EMAIL_ERROR_MESSAGE);
+        if(loan == null || !emailValidator.validate(loan.getEmail())) {
+            errors.rejectValue(USER_FIELD_NAME, USER_ERROR_CODE, USER_ERROR_MESSAGE);
         }
 
     }

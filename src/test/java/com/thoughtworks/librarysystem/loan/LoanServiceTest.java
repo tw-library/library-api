@@ -12,7 +12,10 @@ import com.thoughtworks.librarysystem.loan.exceptions.CopyIsNotAvailableExceptio
 import com.thoughtworks.librarysystem.library.Library;
 import com.thoughtworks.librarysystem.library.LibraryBuilder;
 import com.thoughtworks.librarysystem.library.LibraryRepository;
-import com.thoughtworks.librarysystem.loan.exceptions.EmailNotFoundException;
+import com.thoughtworks.librarysystem.loan.exceptions.UserNotFoundException;
+import com.thoughtworks.librarysystem.user.User;
+import com.thoughtworks.librarysystem.user.UserBuilder;
+import com.thoughtworks.librarysystem.user.UserRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,6 +49,9 @@ public class LoanServiceTest {
 
     @Autowired
     BookRepository bookRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private LibraryRepository libraryRepository;
@@ -84,7 +90,14 @@ public class LoanServiceTest {
 
         copyRepository.save(copy);
 
-        loanService.borrowCopy(copy.getId(), "tcruz@thoughtworks.com");
+        User user = new UserBuilder()
+                .withEmail("tcruz@thoughtworks.com")
+                .withName("Tulio")
+                .build();
+
+        userRepository.save(user);
+
+        loanService.borrowCopy(copy.getId(), user.getEmail());
 
         Loan loan = loanRepository.findByCopy(copy).get(0);
         Copy borrowedCopy = copyRepository.findOne(copy.getId());
@@ -95,7 +108,7 @@ public class LoanServiceTest {
         assertThat(loan.getStartDate(), is(not(nullValue())));
     }
 
-    @Test(expected = EmailNotFoundException.class)
+    @Test(expected = UserNotFoundException.class)
     public void shouldNotCreateLoanWithNoIdentify() {
 
         copy = new CopyBuilder()
@@ -109,7 +122,7 @@ public class LoanServiceTest {
 
     }
 
-    @Test(expected = EmailNotFoundException.class)
+    @Test(expected = UserNotFoundException.class)
     public void shouldNotCreateLoanWithInvalidEmail() {
 
         copy = new CopyBuilder()
@@ -119,7 +132,7 @@ public class LoanServiceTest {
 
         copyRepository.save(copy);
 
-        assertThat(loanService.borrowCopy(copy.getId(), "test"), is(nullValue()));
+        assertThat(loanService.borrowCopy(copy.getId(), null), is(nullValue()));
 
     }
 
@@ -132,8 +145,12 @@ public class LoanServiceTest {
                 .withLibrary(library)
                 .build();
 
+        User user = new UserBuilder()
+                .withEmail("tcruz@thoughtworks.com")
+                .withId(1).withName("Tulio").build();
+
         copyRepository.save(copy);
 
-        loanService.borrowCopy(copy.getId(), "tcruz@thoughtworks.com");
+        loanService.borrowCopy(copy.getId(), user.getEmail());
     }
 }
