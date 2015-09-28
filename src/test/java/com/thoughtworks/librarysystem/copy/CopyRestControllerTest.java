@@ -16,6 +16,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.MediaType;
@@ -115,7 +116,15 @@ public class CopyRestControllerTest extends ApplicationTestBase {
                 .andExpect(jsonPath("$_embedded.copies[0].title", is(book.getTitle())))
                 .andExpect(jsonPath("$_embedded.copies[0].author", is(book.getAuthor())))
                 .andExpect(jsonPath("$_embedded.copies[0].imageUrl", is(book.getImageUrl())))
-                .andExpect(jsonPath("$_embedded.copies[0].reference", is(book.getId())));
+                .andExpect(jsonPath("$_embedded.copies[0].reference", is(book.getId())))
+                .andExpect(jsonPath("$_embedded.copies[0].subtitle", is(book.getSubtitle())))
+                .andExpect(jsonPath("$_embedded.copies[0].description", is(book.getDescription())))
+                .andExpect(jsonPath("$_embedded.copies[0].isbn", is(book.getIsbn())))
+                .andExpect(jsonPath("$_embedded.copies[0].publisher", is(book.getPublisher())))
+                .andExpect(jsonPath("$_embedded.copies[0].publicationDate", is(book.getPublicationDate())))
+                .andExpect(jsonPath("$_embedded.copies[0].numberOfPages", is(book.getNumberOfPages())));
+
+
     }
 
 }

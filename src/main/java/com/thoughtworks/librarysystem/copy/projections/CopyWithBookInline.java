@@ -29,6 +29,24 @@ public interface CopyWithBookInline {
     @Value("#{target.book.id}")
     Integer getReference();
 
+    @Value("#{target.book.subtitle}")
+    String getSubtitle();
+
+    @Value("#{target.book.description}")
+    String getDescription();
+
+    @Value("#{target.book.isbn}")
+    Long getIsbn();
+
+    @Value("#{target.book.publisher}")
+    String getPublisher();
+
+    @Value("#{target.book.publicationDate}")
+    String getPublicationDate();
+
+    @Value("#{target.book.numberOfPages}")
+    Integer getNumberOfPages();
+
     Loan getLastLoan();
 
     List<Loan> getLoans();
