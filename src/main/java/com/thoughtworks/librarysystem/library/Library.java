@@ -2,13 +2,11 @@ package com.thoughtworks.librarysystem.library;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import com.thoughtworks.librarysystem.copy.Copy;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
-import java.util.Set;
 
 @Table(name="library")
 @JsonIdentityInfo(property = "id", generator = ObjectIdGenerators.PropertyGenerator.class)
@@ -30,8 +28,5 @@ public class Library {
     @NotBlank
     @Column(unique = true, nullable = false)
     private String slug;
-
-    @OneToMany(mappedBy = "library")
-    private Set<Copy> copies;
 
 }

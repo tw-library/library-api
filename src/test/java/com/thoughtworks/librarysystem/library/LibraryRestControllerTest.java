@@ -8,9 +8,6 @@ import com.thoughtworks.librarysystem.book.BookRepository;
 import com.thoughtworks.librarysystem.copy.Copy;
 import com.thoughtworks.librarysystem.copy.CopyBuilder;
 import com.thoughtworks.librarysystem.copy.CopyRepository;
-import com.thoughtworks.librarysystem.library.Library;
-import com.thoughtworks.librarysystem.library.LibraryBuilder;
-import com.thoughtworks.librarysystem.library.LibraryRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,8 +24,6 @@ import org.springframework.web.context.WebApplicationContext;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -83,7 +78,6 @@ public class LibraryRestControllerTest {
         library = new LibraryBuilder()
                 .withName("belohorizonte")
                 .withSlug("bh")
-                .withCopies(copies)
                 .build();
 
         libraryRepository.save(library);
