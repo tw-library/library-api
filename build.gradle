@@ -56,6 +56,7 @@ dependencies {
 
     compile("com.fasterxml.jackson.core:jackson-core:2.4.1")
     compile("com.fasterxml.jackson.core:jackson-databind:2.4.1.1")
+    compile("com.auth0:java-jwt:2.1.0")
 
     testCompile 'com.jayway.restassured:rest-assured:2.5.0'
     testCompile 'com.jayway.restassured:spring-mock-mvc:2.5.0'
