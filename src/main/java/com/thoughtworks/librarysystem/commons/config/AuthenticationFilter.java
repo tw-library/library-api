@@ -2,7 +2,6 @@ package com.thoughtworks.librarysystem.commons.config;
 
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.JWTVerifyException;
-import com.auth0.jwt.internal.org.apache.commons.codec.binary.Base64;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -13,7 +12,6 @@ import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
-import java.util.Map;
 
 /**
  *  CORS: Cross-origin resource sharing: is a mechanism that allows restricted resources (e.g. fonts, JavaScript, etc.)
@@ -24,7 +22,8 @@ public class AuthenticationFilter implements Filter {
 
     private static final String HEADER_PARAMETER_NAME_TOKEN = "x-token";
 
-    private static final String SUPER_SECRET = "superSecret";
+    public static final String VARIABLE_NAME = "AUTH_SECRET";
+    private static final String AUTH_SECRET = System.getenv(VARIABLE_NAME) != null ? System.getenv(VARIABLE_NAME) :  "local_secret";
 
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
 
@@ -41,7 +40,7 @@ public class AuthenticationFilter implements Filter {
             String token = request.getHeader(HEADER_PARAMETER_NAME_TOKEN);
 
             try {
-                new JWTVerifier(SUPER_SECRET).verify(token);
+                new JWTVerifier(AUTH_SECRET).verify(token);
             } catch (NoSuchAlgorithmException | InvalidKeyException | SignatureException | JWTVerifyException | IllegalStateException e) {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 return;
