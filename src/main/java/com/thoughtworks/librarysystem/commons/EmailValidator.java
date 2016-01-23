@@ -17,14 +17,7 @@ public class EmailValidator {
     public EmailValidator() {
         pattern = Pattern.compile(EMAIL_PATTERN);
     }
-
-    /**
-     * Validate hex with regular expression
-     *
-     * @param email
-     *            hex for validation
-     * @return true valid hex, false invalid hex
-     */
+    
     public boolean validate(final String email) {
 
         matcher = pattern.matcher(email);
