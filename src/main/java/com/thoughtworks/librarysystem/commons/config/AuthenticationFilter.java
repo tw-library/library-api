@@ -13,10 +13,6 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
 
-/**
- *  CORS: Cross-origin resource sharing: is a mechanism that allows restricted resources (e.g. fonts, JavaScript, etc.)
- *  on a web page to be requested from another domain outside the domain from which the resource originated.
-**/
 @Component
 public class AuthenticationFilter implements Filter {
 
