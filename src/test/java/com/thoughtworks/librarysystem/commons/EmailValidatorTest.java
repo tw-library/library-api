@@ -14,4 +14,15 @@ public class EmailValidatorTest {
 
         assertThat(validator.validate(validEmail), is(true));
     }
+
+    @Test
+    public void shouldReturnFalseForInvalidEmail() throws Exception {
+        EmailValidator validator = new EmailValidator();
+        String invalidEmail = "invalid@email";
+
+        assertThat(validator.validate(invalidEmail), is(false));
+
+        String anotherInvalidEmail = "invalid.com";
+        assertThat(validator.validate(anotherInvalidEmail), is(false));
+    }
 }
