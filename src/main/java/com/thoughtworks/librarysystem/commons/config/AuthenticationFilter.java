@@ -17,19 +17,16 @@ import java.security.SignatureException;
 public class AuthenticationFilter implements Filter {
 
     private static final String HEADER_PARAMETER_NAME_TOKEN = "x-token";
-
     public static final String VARIABLE_NAME = "AUTH_SECRET";
     private static final String AUTH_SECRET = System.getenv(VARIABLE_NAME) != null ? System.getenv(VARIABLE_NAME) :  "local_secret";
 
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
 
         HttpServletResponse response = (HttpServletResponse) res;
-
         HttpServletRequest request = (HttpServletRequest) req;
-
         String method = request.getMethod();
 
-        settingCORSProperties(response);
+        setCrossOriginResourceProperties(response);
 
         if(!method.equalsIgnoreCase(RequestMethod.OPTIONS.name())) {
 
@@ -46,7 +43,7 @@ public class AuthenticationFilter implements Filter {
         chain.doFilter(req, res);
     }
 
-    private void settingCORSProperties(HttpServletResponse response) {
+    private void setCrossOriginResourceProperties(HttpServletResponse response) {
         response.setHeader("Access-Control-Allow-Origin", "*");
         response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE, PATCH");
         response.setHeader("Access-Control-Max-Age", "3600");
