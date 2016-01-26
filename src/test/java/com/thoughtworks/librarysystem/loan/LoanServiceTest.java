@@ -3,8 +3,10 @@ package com.thoughtworks.librarysystem.loan;
 import com.thoughtworks.librarysystem.copy.Copy;
 import com.thoughtworks.librarysystem.copy.CopyRepository;
 import com.thoughtworks.librarysystem.copy.CopyStatus;
+import com.thoughtworks.librarysystem.loan.exceptions.CopyIsNotAvailableException;
 import com.thoughtworks.librarysystem.user.User;
 import com.thoughtworks.librarysystem.user.UserRepository;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -39,28 +41,39 @@ public class LoanServiceTest {
     private final String USER_EMAIL = "some@email.com";
     private final int COPY_ID = 1;
 
+    private User user;
+    private Copy copy;
+    private Loan loan;
 
-    @Test
-    public void shouldSetCopyStatusToBorrowed() throws Exception {
-        User user = new User();
+    @Before
+    public void setUp() throws Exception {
+        loan = new Loan();
+
+        user = new User();
         user.setEmail(USER_EMAIL);
+
+        copy = new Copy();
+        copy.setId(COPY_ID);
 
         List<User> userList = Arrays.asList(user);
 
-        Copy copy = new Copy();
-        copy.setId(COPY_ID);
-        copy.setStatus(CopyStatus.AVAILABLE);
-
-        Loan loan = new Loan();
-
         when(copyRepository.findOne(COPY_ID)).thenReturn(copy);
-        when(userRepository.findByEmail(anyString())).thenReturn(userList);
         when(loanRepository.save(loan)).thenReturn(loan);
+        when(userRepository.findByEmail(anyString())).thenReturn(userList);
 
+    }
+
+    @Test
+    public void shouldSetCopyStatusToBorrowed() throws Exception {
+        copy.setStatus(CopyStatus.AVAILABLE);
         service.borrowCopy(copy.getId(), USER_EMAIL);
 
         assertThat(copy.getStatus(), is(CopyStatus.BORROWED));
     }
 
-
+    @Test(expected = CopyIsNotAvailableException.class)
+    public void shouldThrowExceptionWhenBorrowingAlreadyBorrowedCopy() throws Exception {
+        copy.setStatus(CopyStatus.BORROWED);
+        service.borrowCopy(copy.getId(), USER_EMAIL);
+    }
 }
