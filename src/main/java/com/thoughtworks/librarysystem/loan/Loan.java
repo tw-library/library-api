@@ -5,8 +5,6 @@ import com.thoughtworks.librarysystem.user.User;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -50,8 +48,8 @@ public class Loan {
 
     public String getEmail(){
 
-        if(email == null && getUser() != null) {
-            return getUser().getEmail();
+        if(email == null && this.user != null) {
+            return user.getEmail();
 
         }else {
             return email;
