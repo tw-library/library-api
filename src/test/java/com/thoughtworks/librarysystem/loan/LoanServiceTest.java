@@ -1,156 +1,66 @@
 package com.thoughtworks.librarysystem.loan;
 
-import com.thoughtworks.librarysystem.Application;
-import com.thoughtworks.librarysystem.book.Book;
-import com.thoughtworks.librarysystem.book.BookBuilder;
-import com.thoughtworks.librarysystem.book.BookRepository;
 import com.thoughtworks.librarysystem.copy.Copy;
-import com.thoughtworks.librarysystem.copy.CopyBuilder;
 import com.thoughtworks.librarysystem.copy.CopyRepository;
 import com.thoughtworks.librarysystem.copy.CopyStatus;
-import com.thoughtworks.librarysystem.loan.exceptions.CopyIsNotAvailableException;
-import com.thoughtworks.librarysystem.library.Library;
-import com.thoughtworks.librarysystem.library.LibraryBuilder;
-import com.thoughtworks.librarysystem.library.LibraryRepository;
-import com.thoughtworks.librarysystem.loan.exceptions.UserNotFoundException;
 import com.thoughtworks.librarysystem.user.User;
-import com.thoughtworks.librarysystem.user.UserBuilder;
 import com.thoughtworks.librarysystem.user.UserRepository;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.transaction.annotation.Transactional;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+
+import javax.annotation.Resource;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.nullValue;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNot.not;
+import static org.hamcrest.Matchers.is;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.when;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = Application.class)
-@WebAppConfiguration
-@DirtiesContext
-@Transactional
+@RunWith(MockitoJUnitRunner.class)
 public class LoanServiceTest {
 
-    @Autowired
-    private LoanRepository loanRepository;
+    @Mock
+    CopyRepository copyRepository;
 
-    @Autowired
-    private CopyRepository copyRepository;
+    @Mock
+    UserRepository userRepository;
 
-    @Autowired
-    private LoanService loanService;
+    @InjectMocks
+    @Resource
+    LoanService service;
 
-    @Autowired
-    BookRepository bookRepository;
+    @Mock
+    LoanRepository loanRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final String USER_EMAIL = "some@email.com";
+    private final int COPY_ID = 1;
 
-    @Autowired
-    private LibraryRepository libraryRepository;
-
-    private Copy copy;
-
-    private Library library;
-
-    private Book book;
-
-    @Before
-    public void setup() throws Exception {
-
-        book = new BookBuilder()
-                .withAuthor("BOOK 1 AUTHOR EXAMPLE")
-                .withTitle("BOOK 1 NAME EXAMPLE")
-                .build();
-        bookRepository.save(book);
-
-        library = new LibraryBuilder()
-                .withName("belohorizonte")
-                .withSlug("bh")
-                .build();
-
-        libraryRepository.save(library);
-
-    }
 
     @Test
-    public void shouldBorrowCopyWhenCopyIsAvailable() {
+    public void shouldSetCopyStatusToBorrowed() throws Exception {
+        User user = new User();
+        user.setEmail(USER_EMAIL);
 
-        copy = new CopyBuilder()
-                        .withBook(book)
-                        .withLibrary(library)
-                        .build();
+        List<User> userList = Arrays.asList(user);
 
-        copyRepository.save(copy);
+        Copy copy = new Copy();
+        copy.setId(COPY_ID);
+        copy.setStatus(CopyStatus.AVAILABLE);
 
-        User user = new UserBuilder()
-                .withEmail("tcruz@thoughtworks.com")
-                .withName("Tulio")
-                .build();
+        Loan loan = new Loan();
 
-        userRepository.save(user);
+        when(copyRepository.findOne(COPY_ID)).thenReturn(copy);
+        when(userRepository.findByEmail(anyString())).thenReturn(userList);
+        when(loanRepository.save(loan)).thenReturn(loan);
 
-        loanService.borrowCopy(copy.getId(), user.getEmail());
+        service.borrowCopy(copy.getId(), USER_EMAIL);
 
-        Loan loan = loanRepository.findByCopy(copy).get(0);
-        Copy borrowedCopy = copyRepository.findOne(copy.getId());
-
-        assertThat(borrowedCopy.getStatus(), is(CopyStatus.BORROWED));
-
-        assertThat(loan, is(not(nullValue())));
-        assertThat(loan.getStartDate(), is(not(nullValue())));
+        assertThat(copy.getStatus(), is(CopyStatus.BORROWED));
     }
 
-    @Test(expected = UserNotFoundException.class)
-    public void shouldNotCreateLoanWithNoIdentify() {
 
-        copy = new CopyBuilder()
-                .withBook(book)
-                .withLibrary(library)
-                .build();
-
-        copyRepository.save(copy);
-
-        assertThat(loanService.borrowCopy(copy.getId(), null), is(nullValue()));
-
-    }
-
-    @Test(expected = UserNotFoundException.class)
-    public void shouldNotCreateLoanWithInvalidEmail() {
-
-        copy = new CopyBuilder()
-                .withBook(book)
-                .withLibrary(library)
-                .build();
-
-        copyRepository.save(copy);
-
-        assertThat(loanService.borrowCopy(copy.getId(), null), is(nullValue()));
-
-    }
-
-    @Test(expected = CopyIsNotAvailableException.class)
-    public void shouldReturnNullWhenBookIsBorrowed() {
-
-        copy = new CopyBuilder()
-                .withBook(book)
-                .withStatus(CopyStatus.BORROWED)
-                .withLibrary(library)
-                .build();
-
-        User user = new UserBuilder()
-                .withEmail("tcruz@thoughtworks.com")
-                .withId(1).withName("Tulio").build();
-
-        copyRepository.save(copy);
-
-        loanService.borrowCopy(copy.getId(), user.getEmail());
-    }
 }
