@@ -47,12 +47,6 @@ public class Loan {
     }
 
     public String getEmail(){
-
-        if(email == null && this.user != null) {
-            return user.getEmail();
-
-        }else {
-            return email;
-        }
+        return (email == null && this.user != null) ? user.getEmail() : this.email;
     }
 }
