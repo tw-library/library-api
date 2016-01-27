@@ -24,6 +24,7 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -154,5 +155,17 @@ public class LoanServiceTest {
         service.returnCopy(LOAN_ID);
 
         verify(loanRepository).save(loan);
+    }
+
+    @Test
+    public void shouldNotSaveLoanWhenThereIsNoEndDateAndCopyIsReturned() throws Exception {
+        Date loanEndDate = new Date(System.currentTimeMillis());
+
+        loan.setEndDate(loanEndDate);
+        copy.setStatus(CopyStatus.BORROWED);
+
+        service.returnCopy(LOAN_ID);
+
+        verify(loanRepository, times(0)).save(loan);
     }
 }
