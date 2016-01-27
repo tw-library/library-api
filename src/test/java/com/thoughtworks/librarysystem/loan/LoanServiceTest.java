@@ -4,6 +4,7 @@ import com.thoughtworks.librarysystem.copy.Copy;
 import com.thoughtworks.librarysystem.copy.CopyRepository;
 import com.thoughtworks.librarysystem.copy.CopyStatus;
 import com.thoughtworks.librarysystem.loan.exceptions.CopyIsNotAvailableException;
+import com.thoughtworks.librarysystem.loan.exceptions.LoanNotExistsException;
 import com.thoughtworks.librarysystem.loan.exceptions.UserNotFoundException;
 import com.thoughtworks.librarysystem.user.User;
 import com.thoughtworks.librarysystem.user.UserRepository;
@@ -68,7 +69,7 @@ public class LoanServiceTest {
 
         when(copyRepository.findOne(COPY_ID)).thenReturn(copy);
         when(userRepository.findByEmail(anyString())).thenReturn(userList);
-        when(loanRepository.findOne(1)).thenReturn(loan);
+        when(loanRepository.findOne(LOAN_ID)).thenReturn(loan);
 
     }
 
@@ -123,8 +124,15 @@ public class LoanServiceTest {
     public void shouldSetCopyStatusAsAvailableWhenCopyIsReturned() throws Exception {
         copy.setStatus(CopyStatus.AVAILABLE);
         loan.setId(LOAN_ID);
-        service.returnCopy(1);
+        service.returnCopy(LOAN_ID);
 
         assertThat(copy.getStatus(), is(CopyStatus.AVAILABLE));
+    }
+
+    @Test(expected = LoanNotExistsException.class)
+    public void shouldThrowExceptionWhenLoanIsNotFound() throws Exception {
+        when(loanRepository.findOne(LOAN_ID)).thenReturn(null);
+
+        service.returnCopy(LOAN_ID);
     }
 }
