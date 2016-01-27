@@ -16,7 +16,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
-import java.sql.Date;
 import java.util.Arrays;
 import java.util.List;
 
@@ -63,8 +62,6 @@ public class LoanServiceTest {
         loan = new LoanBuilder()
                 .withCopy(copy)
                 .withUser(user)
-                .withId(LOAN_ID)
-                .withStartDate(new Date(System.currentTimeMillis()))
                 .build();
 
         userList = Arrays.asList(user);
@@ -116,9 +113,16 @@ public class LoanServiceTest {
     }
 
     @Test
+    public void shouldSaveLoanWhenCopyIsBorrowed() throws Exception {
+        service.borrowCopy(copy.getId(), user.getEmail());
+
+        verify(loanRepository).save(loan);
+    }
+
+    @Test
     public void shouldSetCopyStatusAsAvailableWhenCopyIsReturned() throws Exception {
         copy.setStatus(CopyStatus.AVAILABLE);
-
+        loan.setId(LOAN_ID);
         service.returnCopy(1);
 
         assertThat(copy.getStatus(), is(CopyStatus.AVAILABLE));
