@@ -16,15 +16,13 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
-import javax.annotation.Resource;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class)
@@ -40,7 +38,6 @@ public class LoanServiceTest {
     LoanRepository loanRepository;
 
     @InjectMocks
-    @Resource
     LoanService service;
 
     private final String USER_EMAIL = "some@email.com";
@@ -100,5 +97,12 @@ public class LoanServiceTest {
         when(userRepository.findByEmail(anyString())).thenReturn(nullUserList);
 
         service.borrowCopy(copy.getId(), USER_EMAIL);
+    }
+
+    @Test
+    public void shouldSaveBorrowedCopy() throws Exception {
+        service.borrowCopy(copy.getId(), user.getEmail());
+
+        verify(copyRepository).save(copy);
     }
 }
