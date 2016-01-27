@@ -16,13 +16,15 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
+import java.sql.Date;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class)
@@ -42,6 +44,7 @@ public class LoanServiceTest {
 
     private final String USER_EMAIL = "some@email.com";
     private final int COPY_ID = 1;
+    private final int LOAN_ID = 9;
 
     private User user;
     private Copy copy;
@@ -50,9 +53,6 @@ public class LoanServiceTest {
 
     @Before
     public void setUp() throws Exception {
-        loanRepository = mock(LoanRepository.class);
-        loan = new Loan();
-
         user = new User();
         user.setEmail(USER_EMAIL);
 
@@ -60,10 +60,19 @@ public class LoanServiceTest {
         copy.setId(COPY_ID);
         copy.setStatus(CopyStatus.AVAILABLE);
 
+        loan = new LoanBuilder()
+                .withCopy(copy)
+                .withUser(user)
+                .withId(LOAN_ID)
+                .withStartDate(new Date(System.currentTimeMillis()))
+                .build();
+
         userList = Arrays.asList(user);
 
         when(copyRepository.findOne(COPY_ID)).thenReturn(copy);
         when(userRepository.findByEmail(anyString())).thenReturn(userList);
+        when(loanRepository.findOne(1)).thenReturn(loan);
+
     }
 
     @Test
@@ -104,5 +113,14 @@ public class LoanServiceTest {
         service.borrowCopy(copy.getId(), user.getEmail());
 
         verify(copyRepository).save(copy);
+    }
+
+    @Test
+    public void shouldSetCopyStatusAsAvailableWhenCopyIsReturned() throws Exception {
+        copy.setStatus(CopyStatus.AVAILABLE);
+
+        service.returnCopy(1);
+
+        assertThat(copy.getStatus(), is(CopyStatus.AVAILABLE));
     }
 }
