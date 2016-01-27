@@ -1,4 +1,4 @@
-package com.thoughtworks.librarysystem.commons;
+package commons;
 
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;

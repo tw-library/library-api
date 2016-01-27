@@ -1,4 +1,4 @@
-package com.thoughtworks.librarysystem.waitinglist;
+package waitinglist;
 
 import com.thoughtworks.librarysystem.Application;
 import com.thoughtworks.librarysystem.book.Book;
@@ -13,6 +13,9 @@ import com.thoughtworks.librarysystem.library.LibraryRepository;
 import com.thoughtworks.librarysystem.user.User;
 import com.thoughtworks.librarysystem.user.UserBuilder;
 import com.thoughtworks.librarysystem.user.UserRepository;
+import com.thoughtworks.librarysystem.waitinglist.WaitingList;
+import com.thoughtworks.librarysystem.waitinglist.WaitingListBuilder;
+import com.thoughtworks.librarysystem.waitinglist.WaitingListRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,12 +26,10 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
