@@ -146,4 +146,13 @@ public class LoanServiceTest {
 
         assertThat(returnedLoan.getEndDate(), is((expectedLoanEndDate)));
     }
+
+    @Test
+    public void shouldSaveLoanWhenThereIsNoEndDate() throws Exception {
+        copy.setStatus(CopyStatus.BORROWED);
+
+        service.returnCopy(LOAN_ID);
+
+        verify(loanRepository).save(loan);
+    }
 }
