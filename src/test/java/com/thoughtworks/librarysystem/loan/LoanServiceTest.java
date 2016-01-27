@@ -17,6 +17,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
+import java.sql.Date;
 import java.util.Arrays;
 import java.util.List;
 
@@ -134,5 +135,15 @@ public class LoanServiceTest {
         when(loanRepository.findOne(LOAN_ID)).thenReturn(null);
 
         service.returnCopy(LOAN_ID);
+    }
+
+    @Test
+    public void shouldSetLoanEndDateWhenReturningCopy() throws Exception {
+        copy.setStatus(CopyStatus.BORROWED);
+
+        Loan returnedLoan = service.returnCopy(LOAN_ID);
+        Date expectedLoanEndDate = new Date(System.currentTimeMillis());
+
+        assertThat(returnedLoan.getEndDate(), is((expectedLoanEndDate)));
     }
 }
