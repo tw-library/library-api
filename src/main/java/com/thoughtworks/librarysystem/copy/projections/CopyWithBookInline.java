@@ -15,8 +15,6 @@ public interface CopyWithBookInline {
 
     CopyStatus getStatus();
 
-    String getDonator();
-
     @Value("#{target.book.title}")
     String getTitle();
 

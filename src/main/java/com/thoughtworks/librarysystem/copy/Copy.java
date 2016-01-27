@@ -33,10 +33,6 @@ public class Copy {
     @Column
     private CopyStatus status;
 
-    @Column
-    private String donator;
-
-
     @JoinColumn(name = "book_id", nullable = false)
     @ManyToOne(fetch=FetchType.EAGER)
     private Book book;

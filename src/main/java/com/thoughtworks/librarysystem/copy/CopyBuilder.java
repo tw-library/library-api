@@ -14,7 +14,6 @@ public class CopyBuilder {
     private Book book;
     private Library library;
     private CopyStatus status = CopyStatus.AVAILABLE;
-    private String donator;
 
     public Copy build(){
 
@@ -23,7 +22,6 @@ public class CopyBuilder {
         copy.setBook(book);
         copy.setStatus(status);
         copy.setLibrary(library);
-        copy.setDonator(donator);
 
         return copy;
     }

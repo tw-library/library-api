@@ -100,7 +100,6 @@ public class CopyWithLastLoanTest {
         copy = new CopyBuilder()
                 .withBook(book)
                 .withLibrary(library)
-                .withDonator("Tulio Cruz")
                 .build();
 
         copyRepository.save(copy);

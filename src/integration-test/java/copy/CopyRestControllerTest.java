@@ -93,7 +93,6 @@ public class CopyRestControllerTest extends ApplicationTestBase {
         copy = new CopyBuilder()
                 .withBook(book)
                 .withLibrary(library)
-                .withDonator("Tulio Cruz")
                 .build();
 
         copyRepository.save(copy);
@@ -108,7 +107,6 @@ public class CopyRestControllerTest extends ApplicationTestBase {
                 .andExpect(jsonPath("$_embedded.copies", hasSize(1)))
                 .andExpect(jsonPath("$_embedded.copies[0].id", is(copy.getId())))
                 .andExpect(jsonPath("$_embedded.copies[0].status", is(copy.getStatus().name())))
-                .andExpect(jsonPath("$_embedded.copies[0].donator", is(copy.getDonator())))
                 .andExpect(jsonPath("$_embedded.copies[0].title", is(book.getTitle())))
                 .andExpect(jsonPath("$_embedded.copies[0].author", is(book.getAuthor())))
                 .andExpect(jsonPath("$_embedded.copies[0].imageUrl", is(book.getImageUrl())))
@@ -119,7 +117,6 @@ public class CopyRestControllerTest extends ApplicationTestBase {
                 .andExpect(jsonPath("$_embedded.copies[0].publisher", is(book.getPublisher())))
                 .andExpect(jsonPath("$_embedded.copies[0].publicationDate", is(book.getPublicationDate())))
                 .andExpect(jsonPath("$_embedded.copies[0].numberOfPages", is(book.getNumberOfPages())));
-
 
     }
 
