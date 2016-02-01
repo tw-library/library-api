@@ -45,7 +45,6 @@ public class LoanControllerTest {
                 .build();
 
         BindingResult bindingResult = mock(BindingResult.class);
-        when(bindingResult.hasErrors()).thenReturn(false);
 
         when(loanService.borrowCopy(copy.getId(), user.getEmail())).thenReturn(loan);
         ResponseEntity currentResponse = controller.borrowBook(loan, bindingResult);
