@@ -1,18 +1,15 @@
-package copy;
+package com.thoughtworks.librarysystem.copy;
 
 
 import com.thoughtworks.librarysystem.Application;
 import com.thoughtworks.librarysystem.book.Book;
 import com.thoughtworks.librarysystem.book.BookBuilder;
 import com.thoughtworks.librarysystem.book.BookRepository;
-import com.thoughtworks.librarysystem.copy.Copy;
-import com.thoughtworks.librarysystem.copy.CopyBuilder;
-import com.thoughtworks.librarysystem.copy.CopyRepository;
+import com.thoughtworks.librarysystem.commons.ApplicationTestBase;
 import com.thoughtworks.librarysystem.library.Library;
 import com.thoughtworks.librarysystem.library.LibraryBuilder;
 import com.thoughtworks.librarysystem.library.LibraryRepository;
 import com.thoughtworks.librarysystem.loan.LoanService;
-import commons.ApplicationTestBase;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
