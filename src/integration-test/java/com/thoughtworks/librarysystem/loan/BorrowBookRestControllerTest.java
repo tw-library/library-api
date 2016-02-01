@@ -1,10 +1,10 @@
 package com.thoughtworks.librarysystem.loan;
 
 import com.thoughtworks.librarysystem.Application;
-import com.thoughtworks.librarysystem.commons.ApplicationTestBase;
 import com.thoughtworks.librarysystem.book.Book;
 import com.thoughtworks.librarysystem.book.BookBuilder;
 import com.thoughtworks.librarysystem.book.BookRepository;
+import com.thoughtworks.librarysystem.commons.ApplicationTestBase;
 import com.thoughtworks.librarysystem.copy.Copy;
 import com.thoughtworks.librarysystem.copy.CopyBuilder;
 import com.thoughtworks.librarysystem.copy.CopyRepository;

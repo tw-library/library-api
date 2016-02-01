@@ -1,10 +1,20 @@
-package com.thoughtworks.librarysystem.loan;
+package loan;
 
 import com.thoughtworks.librarysystem.copy.Copy;
 import com.thoughtworks.librarysystem.copy.CopyRepository;
 import com.thoughtworks.librarysystem.copy.CopyStatus;
+<<<<<<< HEAD:src/test/java/com/thoughtworks/librarysystem/loan/LoanServiceTest.java
 import com.thoughtworks.librarysystem.loan.exceptions.CopyIsNotAvailableException;
 import com.thoughtworks.librarysystem.loan.exceptions.LoanNotExistsException;
+=======
+import com.thoughtworks.librarysystem.library.Library;
+import com.thoughtworks.librarysystem.library.LibraryBuilder;
+import com.thoughtworks.librarysystem.library.LibraryRepository;
+import com.thoughtworks.librarysystem.loan.Loan;
+import com.thoughtworks.librarysystem.loan.LoanRepository;
+import com.thoughtworks.librarysystem.loan.LoanService;
+import com.thoughtworks.librarysystem.loan.exceptions.CopyIsNotAvailableException;
+>>>>>>> 4d861d0d24ab6c3a06a4d08a066f272fa04bafce:src/integration-test/java/loan/LoanServiceTest.java
 import com.thoughtworks.librarysystem.loan.exceptions.UserNotFoundException;
 import com.thoughtworks.librarysystem.user.User;
 import com.thoughtworks.librarysystem.user.UserRepository;
