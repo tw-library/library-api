@@ -38,7 +38,7 @@ public class LoanControllerTest {
     private BindingResult bindingResult;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         user = new User();
         user.setEmail("some@email.com");
 
@@ -58,7 +58,7 @@ public class LoanControllerTest {
     }
 
     @Test
-    public void shouldReturnHttpStatusCreatedWhenBookIsSuccessfullyBorrowed() throws Exception {
+    public void shouldReturnHttpStatusCreatedWhenBookIsSuccessfullyBorrowed() {
         when(loanService.borrowCopy(copy.getId(), user.getEmail())).thenReturn(loan);
 
         ResponseEntity currentResponse = controller.borrowBook(loan, bindingResult);
@@ -68,7 +68,7 @@ public class LoanControllerTest {
     }
 
     @Test
-    public void shouldReturnHttpConflictStatusWhenBookIsNotAvailable() throws Exception {
+    public void shouldReturnHttpConflictStatusWhenBookIsNotAvailable() {
         doThrow(new CopyIsNotAvailableException()).when(loanService).borrowCopy(copy.getId(), user.getEmail());
 
         ResponseEntity currentResponse = controller.borrowBook(loan, bindingResult);
@@ -88,7 +88,7 @@ public class LoanControllerTest {
     }
 
     @Test
-    public void shouldReturnHttpUnauthorizedStatusCodeWhenUserIsNotFound() throws Exception {
+    public void shouldReturnHttpUnauthorizedStatusCodeWhenUserIsNotFound() {
         User notExitentUser = new UserBuilder()
                 .withEmail("user@notfound.com")
                 .build();
@@ -104,7 +104,7 @@ public class LoanControllerTest {
     }
 
     @Test
-    public void shouldReturnHttpPreconditionFailedStatusCodeThereAreBindingErrors() throws Exception {
+    public void shouldReturnHttpPreconditionFailedStatusCodeThereAreBindingErrors(){
         when(bindingResult.hasErrors()).thenReturn(true);
 
         ResponseEntity currentResponse = controller.borrowBook(loan, bindingResult);
@@ -114,7 +114,7 @@ public class LoanControllerTest {
     }
 
     @Test
-    public void shouldReturnHttpNoContentStatusWhenBookIsSuccessfullyReturned() throws Exception {
+    public void shouldReturnHttpNoContentStatusWhenBookIsSuccessfullyReturned(){
         when(loanService.returnCopy(loan.getId())).thenReturn(loan);
 
         ResponseEntity currentResponse = controller.returnBook(loan.getId(), loan, bindingResult);
@@ -124,7 +124,7 @@ public class LoanControllerTest {
     }
 
     @Test
-    public void shouldReturnPreconditionRequiredHttpStatusWhenLoanDoesNotExist() throws Exception {
+    public void shouldReturnPreconditionRequiredHttpStatusWhenLoanDoesNotExist(){
         Loan notExistentLoan = new Loan();
 
         doThrow(LoanNotExistsException.class).when(loanService).returnCopy(notExistentLoan.getId());
@@ -136,7 +136,7 @@ public class LoanControllerTest {
     }
 
     @Test
-    public void shouldReturnInTernalServerStatusCodeForAnyGenericExceptionWhenReturningBook() throws Exception {
+    public void shouldReturnInTernalServerStatusCodeForAnyGenericExceptionWhenReturningBook(){
         doThrow(Exception.class).when(loanService).returnCopy(loan.getId());
 
         ResponseEntity currentResponse = controller.returnBook(loan.getId(), loan, bindingResult);
