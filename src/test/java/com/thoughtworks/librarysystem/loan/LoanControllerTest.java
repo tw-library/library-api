@@ -73,4 +73,14 @@ public class LoanControllerTest {
 
         assertThat(currentResponse.getStatusCode(), is(expectedResponse.getStatusCode()));
     }
+
+    @Test
+    public void shouldThrowHttpInternalServerErrorStatusForGenericException(){
+        Loan invalidLoan = null;
+
+        ResponseEntity currentResponse = controller.borrowBook(invalidLoan, bindingResult);
+        ResponseEntity expectedResponse = new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+
+        assertThat(currentResponse.getStatusCode(), is(expectedResponse.getStatusCode()));
+    }
 }
