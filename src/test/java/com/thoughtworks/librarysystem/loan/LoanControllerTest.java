@@ -101,4 +101,14 @@ public class LoanControllerTest {
 
         assertThat(currentResponse.getStatusCode(), is(expectedResponse.getStatusCode()));
     }
+
+    @Test
+    public void shouldReturnHttpPreconditionFailedStatusCodeThereAreBindingErrors() throws Exception {
+        when(bindingResult.hasErrors()).thenReturn(true);
+
+        ResponseEntity currentResponse = controller.borrowBook(loan, bindingResult);
+        ResponseEntity expectedResponse = new ResponseEntity(HttpStatus.PRECONDITION_FAILED);
+
+        assertThat(currentResponse.getStatusCode(), is(expectedResponse.getStatusCode()));
+    }
 }
