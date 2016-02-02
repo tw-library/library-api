@@ -64,7 +64,6 @@ public class LoanController {
     public ResponseEntity returnBook(@PathVariable Integer loanId, @RequestBody Loan loan, BindingResult bindingResult) {
 
         try {
-
             loanService.returnCopy(loanId);
 
         }catch (LoanNotExistsException  e) {

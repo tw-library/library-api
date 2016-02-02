@@ -77,7 +77,7 @@ public class LoanControllerTest {
     }
 
     @Test
-    public void shouldThrowHttpInternalServerErrorStatusForGenericException(){
+    public void shouldReturnHttpInternalServerErrorStatusForGenericException(){
         Loan invalidLoan = null;
 
         ResponseEntity currentResponse = controller.borrowBook(invalidLoan, bindingResult);
@@ -87,7 +87,7 @@ public class LoanControllerTest {
     }
 
     @Test
-    public void shouldThrowHttpUnauthorizedStatusCodeWhenUserIsNotFound() throws Exception {
+    public void shouldReturnHttpUnauthorizedStatusCodeWhenUserIsNotFound() throws Exception {
         User notExitentUser = new UserBuilder()
                 .withEmail("user@notfound.com")
                 .build();
@@ -100,6 +100,5 @@ public class LoanControllerTest {
         ResponseEntity expectedResponse = new ResponseEntity(HttpStatus.UNAUTHORIZED);
 
         assertThat(currentResponse.getStatusCode(), is(expectedResponse.getStatusCode()));
-
     }
 }
