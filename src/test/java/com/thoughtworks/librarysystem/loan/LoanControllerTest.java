@@ -134,4 +134,14 @@ public class LoanControllerTest {
 
         assertThat(currentResponse.getStatusCode(), is(expectedResponse.getStatusCode()));
     }
+
+    @Test
+    public void shouldReturnInTernalServerStatusCodeForAnyGenericExceptionWhenReturningBook() throws Exception {
+        doThrow(Exception.class).when(loanService).returnCopy(loan.getId());
+
+        ResponseEntity currentResponse = controller.returnBook(loan.getId(), loan, bindingResult);
+        ResponseEntity expectedResponse = new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+
+        assertThat(currentResponse.getStatusCode(), is(expectedResponse.getStatusCode()));
+    }
 }
