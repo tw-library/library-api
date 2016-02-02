@@ -69,7 +69,7 @@ public class LoanControllerTest {
 
     @Test
     public void shouldReturnHttpConflictStatusWhenBookIsNotAvailable() {
-        doThrow(new CopyIsNotAvailableException()).when(loanService).borrowCopy(copy.getId(), user.getEmail());
+        doThrow(CopyIsNotAvailableException.class).when(loanService).borrowCopy(copy.getId(), user.getEmail());
 
         ResponseEntity currentResponse = controller.borrowBook(loan, bindingResult);
         ResponseEntity expectedResponse = new ResponseEntity(HttpStatus.CONFLICT);
@@ -95,7 +95,7 @@ public class LoanControllerTest {
 
         loan.setUser(notExitentUser);
 
-        doThrow(new UserNotFoundException()).when(loanService).borrowCopy(loan.getCopy().getId(), loan.getEmail());
+        doThrow(UserNotFoundException.class).when(loanService).borrowCopy(loan.getCopy().getId(), loan.getEmail());
 
         ResponseEntity currentResponse = controller.borrowBook(loan, bindingResult);
         ResponseEntity expectedResponse = new ResponseEntity(HttpStatus.UNAUTHORIZED);
