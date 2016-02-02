@@ -57,7 +57,7 @@ public class LoanControllerTest {
     }
 
     @Test
-    public void shouldReturnHttpStatusCreatedWhenBookIsBorrowed() throws Exception {
+    public void shouldReturnHttpStatusCreatedWhenBookIsSuccessfullyBorrowed() throws Exception {
         when(loanService.borrowCopy(copy.getId(), user.getEmail())).thenReturn(loan);
 
         ResponseEntity currentResponse = controller.borrowBook(loan, bindingResult);
@@ -77,7 +77,7 @@ public class LoanControllerTest {
     }
 
     @Test
-    public void shouldReturnHttpInternalServerErrorStatusForGenericException(){
+    public void shouldReturnHttpInternalServerErrorStatusForGenericExceptionWhenBorrowingBook(){
         Loan invalidLoan = null;
 
         ResponseEntity currentResponse = controller.borrowBook(invalidLoan, bindingResult);
