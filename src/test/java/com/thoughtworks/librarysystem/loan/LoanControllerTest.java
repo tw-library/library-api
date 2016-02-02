@@ -111,4 +111,14 @@ public class LoanControllerTest {
 
         assertThat(currentResponse.getStatusCode(), is(expectedResponse.getStatusCode()));
     }
+
+    @Test
+    public void shouldReturnHttpNoContentStatusWhenBookIsSuccessfullyReturned() throws Exception {
+        when(loanService.returnCopy(loan.getId())).thenReturn(loan);
+
+        ResponseEntity currentResponse = controller.returnBook(loan.getId(), loan, bindingResult);
+        ResponseEntity expectedResponse = new ResponseEntity(HttpStatus.NO_CONTENT);
+
+        assertThat(currentResponse.getStatusCode(), is(expectedResponse.getStatusCode()));
+    }
 }
