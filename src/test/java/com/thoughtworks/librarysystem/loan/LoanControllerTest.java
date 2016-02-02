@@ -4,7 +4,9 @@ import com.thoughtworks.librarysystem.book.Book;
 import com.thoughtworks.librarysystem.copy.Copy;
 import com.thoughtworks.librarysystem.copy.CopyBuilder;
 import com.thoughtworks.librarysystem.loan.exceptions.CopyIsNotAvailableException;
+import com.thoughtworks.librarysystem.loan.exceptions.UserNotFoundException;
 import com.thoughtworks.librarysystem.user.User;
+import com.thoughtworks.librarysystem.user.UserBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,7 +34,7 @@ public class LoanControllerTest {
     private Book book;
     private Copy copy;
     private Loan loan;
-    BindingResult bindingResult;
+    private BindingResult bindingResult;
 
     @Before
     public void setUp() throws Exception {
@@ -82,5 +84,22 @@ public class LoanControllerTest {
         ResponseEntity expectedResponse = new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
 
         assertThat(currentResponse.getStatusCode(), is(expectedResponse.getStatusCode()));
+    }
+
+    @Test
+    public void shouldThrowHttpUnauthorizedStatusCodeWhenUserIsNotFound() throws Exception {
+        User notExitentUser = new UserBuilder()
+                .withEmail("user@notfound.com")
+                .build();
+
+        loan.setUser(notExitentUser);
+
+        doThrow(new UserNotFoundException()).when(loanService).borrowCopy(loan.getCopy().getId(), loan.getEmail());
+
+        ResponseEntity currentResponse = controller.borrowBook(loan, bindingResult);
+        ResponseEntity expectedResponse = new ResponseEntity(HttpStatus.UNAUTHORIZED);
+
+        assertThat(currentResponse.getStatusCode(), is(expectedResponse.getStatusCode()));
+
     }
 }

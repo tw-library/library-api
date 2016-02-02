@@ -1,8 +1,9 @@
 package com.thoughtworks.librarysystem.loan;
 
-import com.thoughtworks.librarysystem.loan.exceptions.CopyIsNotAvailableException;
 import com.thoughtworks.librarysystem.commons.ResponseError;
+import com.thoughtworks.librarysystem.loan.exceptions.CopyIsNotAvailableException;
 import com.thoughtworks.librarysystem.loan.exceptions.LoanNotExistsException;
+import com.thoughtworks.librarysystem.loan.exceptions.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.RepositoryRestController;
 import org.springframework.http.HttpStatus;
@@ -50,6 +51,8 @@ public class LoanController {
 
         }catch (CopyIsNotAvailableException e){
             return new ResponseEntity(new ResponseError(e.getMessage()),HttpStatus.CONFLICT);
+        }catch (UserNotFoundException e){
+            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
         }catch (Exception e){
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
         }
