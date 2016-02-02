@@ -4,6 +4,7 @@ import com.thoughtworks.librarysystem.book.Book;
 import com.thoughtworks.librarysystem.copy.Copy;
 import com.thoughtworks.librarysystem.copy.CopyBuilder;
 import com.thoughtworks.librarysystem.loan.exceptions.CopyIsNotAvailableException;
+import com.thoughtworks.librarysystem.loan.exceptions.LoanNotExistsException;
 import com.thoughtworks.librarysystem.loan.exceptions.UserNotFoundException;
 import com.thoughtworks.librarysystem.user.User;
 import com.thoughtworks.librarysystem.user.UserBuilder;
@@ -118,6 +119,18 @@ public class LoanControllerTest {
 
         ResponseEntity currentResponse = controller.returnBook(loan.getId(), loan, bindingResult);
         ResponseEntity expectedResponse = new ResponseEntity(HttpStatus.NO_CONTENT);
+
+        assertThat(currentResponse.getStatusCode(), is(expectedResponse.getStatusCode()));
+    }
+
+    @Test
+    public void shouldReturnPreconditionRequiredHttpStatusWhenLoanDoesNotExist() throws Exception {
+        Loan notExistentLoan = new Loan();
+
+        doThrow(LoanNotExistsException.class).when(loanService).returnCopy(notExistentLoan.getId());
+
+        ResponseEntity currentResponse = controller.returnBook(notExistentLoan.getId(), notExistentLoan, bindingResult);
+        ResponseEntity expectedResponse = new ResponseEntity(HttpStatus.PRECONDITION_REQUIRED);
 
         assertThat(currentResponse.getStatusCode(), is(expectedResponse.getStatusCode()));
     }
