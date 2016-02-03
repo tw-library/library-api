@@ -1,8 +1,8 @@
-package auth;
+package com.thoughtworks.librarysystem.auth;
 
 import com.thoughtworks.librarysystem.Application;
+import com.thoughtworks.librarysystem.commons.ApplicationTestBase;
 import com.thoughtworks.librarysystem.commons.config.AuthenticationFilter;
-import commons.ApplicationTestBase;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

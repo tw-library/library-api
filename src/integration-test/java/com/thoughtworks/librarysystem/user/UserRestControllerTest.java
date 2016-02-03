@@ -1,8 +1,7 @@
-package user;
+package com.thoughtworks.librarysystem.user;
 
 import com.thoughtworks.librarysystem.Application;
-import com.thoughtworks.librarysystem.user.UserRepository;
-import commons.ApplicationTestBase;
+import com.thoughtworks.librarysystem.commons.ApplicationTestBase;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

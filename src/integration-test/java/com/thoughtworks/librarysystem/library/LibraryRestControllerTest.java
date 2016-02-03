@@ -1,4 +1,4 @@
-package library;
+package com.thoughtworks.librarysystem.library;
 
 
 import com.thoughtworks.librarysystem.Application;

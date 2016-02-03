@@ -1,4 +1,4 @@
-package waitinglist;
+package com.thoughtworks.librarysystem.waitinglist;
 
 import com.thoughtworks.librarysystem.Application;
 import com.thoughtworks.librarysystem.book.Book;
@@ -13,9 +13,6 @@ import com.thoughtworks.librarysystem.library.LibraryRepository;
 import com.thoughtworks.librarysystem.user.User;
 import com.thoughtworks.librarysystem.user.UserBuilder;
 import com.thoughtworks.librarysystem.user.UserRepository;
-import com.thoughtworks.librarysystem.waitinglist.WaitingList;
-import com.thoughtworks.librarysystem.waitinglist.WaitingListBuilder;
-import com.thoughtworks.librarysystem.waitinglist.WaitingListRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
