@@ -11,7 +11,7 @@ import java.util.List;
 @RepositoryRestResource(excerptProjection = CopyWithBookInline.class)
 public interface CopyRepository extends PagingAndSortingRepository<Copy, Integer> {
 
-    @Query(name = "select c from Copy c where c.library.slug = :slug limit 1")
+    @Query(name = "select c from Copy c where c.library.slug = :slug")
     List<Copy> findCopiesByLibrarySlug(@Param("slug") String slug);
 
     @Query(name = "select count(Copy.copy_id) from Copy where Copy.library.slug = :slug and Copy.book_id= :book")
@@ -20,5 +20,7 @@ public interface CopyRepository extends PagingAndSortingRepository<Copy, Integer
 
     @Query(name = "select count(Copy.copy_id) from Copy where Copy.library.slug = :slug and Copy.book_id= :book and status = AVAILABLE")
     Long countByLibrarySlugAndBookIdAndStatus(@Param("slug") String slug, @Param("book") Integer book, @Param("status") CopyStatus status);
+
+    List<Copy> findDistinctCopiesByLibrary(@Param("slug") String slug);
 
 }
