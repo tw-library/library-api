@@ -23,4 +23,7 @@ public interface CopyRepository extends PagingAndSortingRepository<Copy, Integer
 
     List<Copy> findDistinctCopiesByLibrary(@Param("slug") String slug);
 
+    List<Copy> findDistinctCopiesByLibrarySlugAndBookIdAndStatus(@Param("slug") String slug, @Param("book") Integer book, @Param("status") CopyStatus status);
+
+
 }

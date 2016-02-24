@@ -3,11 +3,12 @@ package com.thoughtworks.librarysystem.copy;
 
 import com.thoughtworks.librarysystem.Application;
 import com.thoughtworks.librarysystem.book.Book;
-import com.thoughtworks.librarysystem.book.BookBuilder;
 import com.thoughtworks.librarysystem.book.BookRepository;
 import com.thoughtworks.librarysystem.commons.ApplicationTestBase;
+import com.thoughtworks.librarysystem.commons.factories.BookFactory;
+import com.thoughtworks.librarysystem.commons.factories.CopyFactory;
+import com.thoughtworks.librarysystem.commons.factories.LibraryFactory;
 import com.thoughtworks.librarysystem.library.Library;
-import com.thoughtworks.librarysystem.library.LibraryBuilder;
 import com.thoughtworks.librarysystem.library.LibraryRepository;
 import com.thoughtworks.librarysystem.loan.LoanService;
 import org.junit.Before;
@@ -63,77 +64,24 @@ public class CopyRestControllerTest extends ApplicationTestBase {
 
         this.mockMvc = webAppContextSetup(webApplicationContext).build();
 
-        book = new BookBuilder()
-                .withTitle("Flowers")
-                .withAuthor("Vijaya Khisty Bodach")
-                .withSubtitle(null)
-                .withDescription("Kick off a plant unit right with Plant Parts from Pebble Plus. Clear text and large, " +
-                        "striking photographs reveal each part of a plant and the role it plays in keeping plants" +
-                        " thriving. Clear diagrams enhance the experience of exploring each part. So plant the " +
-                        "seeds for a love of life science with Plant Parts!\"")
-                .withIsbn13(9780736896191L)
-                .withPublisher("Capstone")
-                .withPublicationDate("2006-07-01")
-                .withNumberOfPages(24)
-                .withImageUrl("http://books.google.com.br/books/content?id=_ojXNuzgHRcC&printsec=frontcover&img=1&zoom=" +
-                        "0&edge=curl&imgtk=AFLRE70fspnCQhDGto11Jg5K01WUluRvPUPA_CjnwthDsp4n5sY5cJ_Lp9AvvmYc80dYqMHAYGg1Mc" +
-                        "wJb5XQKIF4lEWYMoDUVqu-Bu9Z9TQH-gbSAbUI99gKnqcZ9EV_K0K7Tefvzii7&source=gbs_api")
-                .build();
-
-
-        bookUnic = new BookBuilder()
-                .withTitle("Flowers")
-                .withAuthor("Vijaya Khisty Bodach")
-                .withSubtitle(null)
-                .withDescription("Kick off a plant unit right with Plant Parts from Pebble Plus. Clear text and large, " +
-                        "striking photographs reveal each part of a plant and the role it plays in keeping plants" +
-                        " thriving. Clear diagrams enhance the experience of exploring each part. So plant the " +
-                        "seeds for a love of life science with Plant Parts!\"")
-                .withPublisher("Capstone")
-                .withPublicationDate("2006-07-01")
-                .withNumberOfPages(24)
-                .withImageUrl("http://books.google.com.br/books/content?id=_ojXNuzgHRcC&printsec=frontcover&img=1&zoom=" +
-                        "0&edge=curl&imgtk=AFLRE70fspnCQhDGto11Jg5K01WUluRvPUPA_CjnwthDsp4n5sY5cJ_Lp9AvvmYc80dYqMHAYGg1Mc" +
-                        "wJb5XQKIF4lEWYMoDUVqu-Bu9Z9TQH-gbSAbUI99gKnqcZ9EV_K0K7Tefvzii7&source=gbs_api")
-                .build();
+        book = new BookFactory().createBookWithStandardIsbn();
+        bookUnic = new BookFactory().createBookWithoutIsbn();
 
         bookRepository.save(book);
         bookRepository.save(bookUnic);
 
-        Library libraryBH = new LibraryBuilder()
-                .withName("belohorizonte")
-                .withSlug("BH")
-                .build();
-
-        Library libraryPOA = new LibraryBuilder()
-                .withName("Porto Alegre")
-                .withSlug("POA")
-                .build();
+        Library libraryBH = new LibraryFactory().createStardardLibrary();
+        Library libraryPOA = new LibraryFactory().createLibrary("Porto Alegre","POA");
 
         libraryRepository.save(libraryBH);
         libraryRepository.save(libraryPOA);
 
-        copy = new CopyBuilder()
-                .withBook(book)
-                .withLibrary(libraryBH)
-                .build();
+        copy = new CopyFactory().createCopyWithLibraryAndBook(libraryBH, book);
+        copySecond = new CopyFactory().createCopyWithLibraryAndBook(libraryBH, book);
+        copySecond.setStatus(CopyStatus.BORROWED);
+        copyThird = new CopyFactory().createCopyWithLibraryAndBook(libraryBH, bookUnic);
 
-        copySecond = new CopyBuilder()
-                .withBook(book)
-                .withLibrary(libraryBH)
-                .withStatus(CopyStatus.BORROWED)
-                .build();
-
-        copyThird = new CopyBuilder()
-                .withBook(bookUnic)
-                .withLibrary(libraryBH)
-                .build();
-
-        copyFourthPOA = new CopyBuilder()
-                .withBook(book)
-                .withLibrary(libraryPOA)
-                .build();
-
+        copyFourthPOA = new CopyFactory().createCopyWithLibraryAndBook(libraryPOA, book);
         copyRepository.save(copy);
         copyRepository.save(copySecond);
         copyRepository.save(copyThird);
@@ -168,27 +116,6 @@ public class CopyRestControllerTest extends ApplicationTestBase {
                 .andDo(print());
     }
 
-
-    @Test
-    public void shouldListAllCopiesWithBookInline() throws Exception {
-        mockMvc.perform(get("/copies"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaTypes.HAL_JSON))
-                .andExpect(jsonPath("$_embedded.copies", hasSize(4)))
-                .andExpect(jsonPath("$_embedded.copies[0].id", is(copy.getId())))
-                .andExpect(jsonPath("$_embedded.copies[0].status", is(copy.getStatus().name())))
-                .andExpect(jsonPath("$_embedded.copies[0].title", is(book.getTitle())))
-                .andExpect(jsonPath("$_embedded.copies[0].author", is(book.getAuthor())))
-                .andExpect(jsonPath("$_embedded.copies[0].imageUrl", is(book.getImageUrl())))
-                .andExpect(jsonPath("$_embedded.copies[0].reference", is(book.getId())))
-                .andExpect(jsonPath("$_embedded.copies[0].subtitle", is(book.getSubtitle())))
-                .andExpect(jsonPath("$_embedded.copies[0].description", is(book.getDescription())))
-                .andExpect(jsonPath("$_embedded.copies[0].isbn", is(book.getIsbn())))
-                .andExpect(jsonPath("$_embedded.copies[0].publisher", is(book.getPublisher())))
-                .andExpect(jsonPath("$_embedded.copies[0].publicationDate", is(book.getPublicationDate())))
-                .andExpect(jsonPath("$_embedded.copies[0].numberOfPages", is(book.getNumberOfPages())))
-                .andDo(print());
-    }
 
 
     @Test
@@ -229,5 +156,6 @@ public class CopyRestControllerTest extends ApplicationTestBase {
                 .andDo(print());
 
     }
+
 
 }

@@ -5,9 +5,6 @@ import com.thoughtworks.librarysystem.Application;
 import com.thoughtworks.librarysystem.book.Book;
 import com.thoughtworks.librarysystem.book.BookBuilder;
 import com.thoughtworks.librarysystem.book.BookRepository;
-import com.thoughtworks.librarysystem.copy.Copy;
-import com.thoughtworks.librarysystem.copy.CopyBuilder;
-import com.thoughtworks.librarysystem.copy.CopyRepository;
 import com.thoughtworks.librarysystem.library.Library;
 import com.thoughtworks.librarysystem.library.LibraryBuilder;
 import com.thoughtworks.librarysystem.library.LibraryRepository;
@@ -112,11 +109,11 @@ public class CopyWithLastLoanTest {
 
         userRepository.save(user);
 
-        Loan loan = loanService.borrowCopy(copy.getId(), user.getEmail());
+        Loan loan = loanService.borrowCopy(copy.getLibrary().getSlug(), copy.getBook().getId(), user.getEmail());
 
         loanService.returnCopy(loan.getId());
 
-        Loan anotherLoan = loanService.borrowCopy(copy.getId(), user.getEmail());
+        Loan anotherLoan = loanService.borrowCopy(copy.getLibrary().getSlug(), copy.getBook().getId(), user.getEmail());
 
         mockMvc.perform(get(mountUrlToGetCopy(copy)))
                 .andExpect(status().isOk())
