@@ -47,7 +47,7 @@ public class LoanController {
                 return new ResponseEntity(responseErrors,HttpStatus.PRECONDITION_FAILED);
             }
 
-            loanService.borrowCopy(loan.getCopy().getId(), loan.getEmail());
+            loanService.borrowCopy(loan.getCopy().getLibrary().getSlug(), loan.getCopy().getBook().getId(), loan.getEmail());
 
         }catch (CopyIsNotAvailableException e){
             return new ResponseEntity(new ResponseError(e.getMessage()),HttpStatus.CONFLICT);
