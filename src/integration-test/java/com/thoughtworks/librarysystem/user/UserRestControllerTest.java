@@ -2,6 +2,7 @@ package com.thoughtworks.librarysystem.user;
 
 import com.thoughtworks.librarysystem.Application;
 import com.thoughtworks.librarysystem.commons.ApplicationTestBase;
+import com.thoughtworks.librarysystem.commons.factories.UserFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,7 +19,9 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.util.HashMap;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -36,9 +39,16 @@ public class UserRestControllerTest extends ApplicationTestBase {
     @Autowired
     private UserRepository userRepository;
 
+    private User user;
+
     @Before
     public void setup() throws Exception {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+
+        user = new UserFactory().createUserWithUserName("elayne");
+
+        userRepository.save(user);
+
     }
 
     @Test
@@ -53,8 +63,18 @@ public class UserRestControllerTest extends ApplicationTestBase {
         mockMvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(userJson))
-                        .andExpect(status().isCreated());
+                        .andExpect(status().isCreated())
+                        .andDo(print());
 
+    }
+
+    @Test
+    public void shouldGetUserByEmail() throws  Exception{
+        String email = user.getEmail();
+        String uri = "/users/search/findByEmail?email" + email;
+        mockMvc.perform(get(uri).accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(print());
     }
 
 
