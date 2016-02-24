@@ -2,17 +2,17 @@ package com.thoughtworks.librarysystem.loan;
 
 import com.thoughtworks.librarysystem.Application;
 import com.thoughtworks.librarysystem.book.Book;
-import com.thoughtworks.librarysystem.book.BookBuilder;
 import com.thoughtworks.librarysystem.book.BookRepository;
 import com.thoughtworks.librarysystem.commons.ApplicationTestBase;
+import com.thoughtworks.librarysystem.commons.factories.BookFactory;
+import com.thoughtworks.librarysystem.commons.factories.CopyFactory;
+import com.thoughtworks.librarysystem.commons.factories.LibraryFactory;
+import com.thoughtworks.librarysystem.commons.factories.UserFactory;
 import com.thoughtworks.librarysystem.copy.Copy;
-import com.thoughtworks.librarysystem.copy.CopyBuilder;
 import com.thoughtworks.librarysystem.copy.CopyRepository;
 import com.thoughtworks.librarysystem.library.Library;
-import com.thoughtworks.librarysystem.library.LibraryBuilder;
 import com.thoughtworks.librarysystem.library.LibraryRepository;
 import com.thoughtworks.librarysystem.user.User;
-import com.thoughtworks.librarysystem.user.UserBuilder;
 import com.thoughtworks.librarysystem.user.UserRepository;
 import org.junit.Before;
 import org.junit.Test;
@@ -75,88 +75,30 @@ public class LoanRepositoryTest extends ApplicationTestBase {
 
         mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
 
-        Library libraryFirst = new LibraryBuilder()
-                .withName("Belo Horizonte")
-                .withSlug("BH")
-                .build();
-
-        Library librarySecond = new LibraryBuilder()
-                .withName("Porto Alegre")
-                .withSlug("POA")
-                .build();
+        Library libraryFirst = new LibraryFactory().createStardardLibrary();
+        Library librarySecond = new LibraryFactory().createLibrary("Porto Alegre", "POA");
 
         libraryRepository.save(libraryFirst);
         libraryRepository.save(librarySecond);
 
-        userFirst = new UserBuilder()
-                .withEmail("tcruz@thoughtworks.com")
-                .withName("Tulio")
-                .build();
-
-        userSecond = new UserBuilder()
-                .withEmail("eferreir@thoughtworks.com")
-                .withName("Elayne")
-                .build();
-
-        userThird = new UserBuilder()
-                .withEmail("fran@thoughtworks.com")
-                .withName("Francielle")
-                .build();
+        userFirst = new UserFactory().createUserWithUserName("tulio");
+        userSecond = new UserFactory().createUserWithUserName("elayne");
+        userThird = new UserFactory().createUserWithUserName("francielle");
 
         userRepository.save(userFirst);
         userRepository.save(userSecond);
         userRepository.save(userThird);
 
-        bookFirst = new BookBuilder()
-                .withTitle("Flowers")
-                .withAuthor("Vijaya Khisty Bodach")
-                .withSubtitle(null)
-                .withDescription("Kick off")
-                .withIsbn13(9780736896191L)
-                .withPublisher("Capstone")
-                .withPublicationDate("2006-07-01")
-                .withNumberOfPages(24)
-                .withImageUrl("http://books.google.com.br/books/content?id=_ojXNuzgHRcC&printsec=frontcover&img=1&zoom=" +
-                        "0&edge=curl&imgtk=AFLRE70fspnCQhDGto11Jg5K01WUluRvPUPA_CjnwthDsp4n5sY5cJ_Lp9AvvmYc80dYqMHAYGg1Mc" +
-                        "wJb5XQKIF4lEWYMoDUVqu-Bu9Z9TQH-gbSAbUI99gKnqcZ9EV_K0K7Tefvzii7&source=gbs_api")
-                .build();
-
-        bookSecond = new BookBuilder()
-                .withTitle("Second Flowers")
-                .withAuthor("Second Vijaya Khisty Bodach")
-                .withSubtitle("Second")
-                .withDescription("Description of the second book")
-                .withPublisher("Capstone")
-                .withPublicationDate("2006-07-01")
-                .withNumberOfPages(24)
-                .withImageUrl("http://books.google.com.br/books/content?id=_ojXNuzgHRcC&printsec=frontcover&img=1&zoom=" +
-                        "0&edge=curl&imgtk=AFLRE70fspnCQhDGto11Jg5K01WUluRvPUPA_CjnwthDsp4n5sY5cJ_Lp9AvvmYc80dYqMHAYGg1Mc" +
-                        "wJb5XQKIF4lEWYMoDUVqu-Bu9Z9TQH-gbSAbUI99gKnqcZ9EV_K0K7Tefvzii7&source=gbs_api")
-                .build();
+        bookFirst = new BookFactory().createBookWithStandardIsbn();
+        bookSecond = new BookFactory().createBookWithoutIsbn();
 
         bookRepository.save(bookFirst);
         bookRepository.save(bookSecond);
 
-        copyFirst = new CopyBuilder()
-                .withBook(bookFirst)
-                .withLibrary(libraryFirst)
-                .build();
-
-        copySecond = new CopyBuilder()
-                .withBook(bookFirst)
-                .withLibrary(libraryFirst)
-                .build();
-
-        copyThird = new CopyBuilder()
-                .withBook(bookSecond)
-                .withLibrary(libraryFirst)
-                .build();
-
-        copyFourth = new CopyBuilder()
-                .withBook(bookSecond)
-                .withLibrary(librarySecond)
-                .build();
-
+        copyFirst = new CopyFactory().createCopyWithLibraryAndBook(libraryFirst, bookFirst);
+        copySecond =new CopyFactory().createCopyWithLibraryAndBook(libraryFirst, bookFirst);
+        copyThird = new CopyFactory().createCopyWithLibraryAndBook(libraryFirst, bookSecond);
+        copyFourth = new CopyFactory().createCopyWithLibraryAndBook(librarySecond, bookSecond);
 
         copyRepository.save(copyFirst);
         copyRepository.save(copySecond);
@@ -168,12 +110,11 @@ public class LoanRepositoryTest extends ApplicationTestBase {
 
         loanSecond = new LoanBuilder()
                 .build();
-
     }
 
     @Test
     public void shouldListOnePendingLoanBorrowedByOneUser() throws Exception {
-        loanFirst = loanService.borrowCopy(bookFirst.getId(), userFirst.getEmail());
+        loanFirst = loanService.borrowCopy(copyFirst.getLibrary().getSlug(), copyFirst.getBook().getId(), userFirst.getEmail());
         String email = loanFirst.getEmail();
 
         Integer book_id = copyFirst.getBook().getId();
@@ -191,7 +132,7 @@ public class LoanRepositoryTest extends ApplicationTestBase {
 
     @Test
     public void shouldListZeroPendingLoanOfAReturnedBook() throws Exception {
-        loanFirst = loanService.borrowCopy(bookSecond.getId(), userSecond.getEmail());
+        loanFirst = loanService.borrowCopy(copySecond.getLibrary().getSlug(), copySecond.getBook().getId(), userSecond.getEmail());
         loanService.returnCopy(loanFirst.getId());
         String email = loanFirst.getEmail();
         Integer book_id = loanFirst.getCopy().getBook().getId();
@@ -200,13 +141,12 @@ public class LoanRepositoryTest extends ApplicationTestBase {
                 .andExpect(status().isOk())
                 .andExpect(content().string("{ }"))
                  .andDo(print());
-
     }
 
     @Test
     public void shouldListTwoPendingLoanBooksBorrowedByTwoUsers() throws Exception {
-        loanFirst = loanService.borrowCopy(copyFirst.getId(), userSecond.getEmail());
-        loanSecond = loanService.borrowCopy(copySecond.getId(), userFirst.getEmail());
+        loanFirst = loanService.borrowCopy(copyFirst.getLibrary().getSlug(), copyFirst.getBook().getId(), userSecond.getEmail());
+        loanSecond = loanService.borrowCopy(copySecond.getLibrary().getSlug(), copySecond.getBook().getId(), userFirst.getEmail());
 
         Integer book_id = loanFirst.getCopy().getBook().getId();
         String uri = "/loans/search/findByEndDateIsNullAndCopyLibrarySlugAndCopyBookId?slug=BH&book=" + book_id;

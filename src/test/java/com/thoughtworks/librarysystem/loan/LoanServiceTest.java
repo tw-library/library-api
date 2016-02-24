@@ -1,5 +1,7 @@
 package com.thoughtworks.librarysystem.loan;
 
+import com.thoughtworks.librarysystem.book.BookRepository;
+import com.thoughtworks.librarysystem.commons.factories.CopyFactory;
 import com.thoughtworks.librarysystem.copy.Copy;
 import com.thoughtworks.librarysystem.copy.CopyRepository;
 import com.thoughtworks.librarysystem.copy.CopyStatus;
@@ -39,11 +41,13 @@ public class LoanServiceTest {
     @Mock
     LoanRepository loanRepository;
 
+    @Mock
+    BookRepository bookRepository;
+
     @InjectMocks
     LoanService service;
 
     private final String USER_EMAIL = "some@email.com";
-    private final int COPY_ID = 1;
     private final int LOAN_ID = 9;
 
     private User user;
@@ -56,9 +60,11 @@ public class LoanServiceTest {
         user = new User();
         user.setEmail(USER_EMAIL);
 
-        copy = new Copy();
-        copy.setId(COPY_ID);
+        copy = new CopyFactory().createStandardCopyWithSameIsbnAndLibrary();
+        copy.setId(1);
         copy.setStatus(CopyStatus.AVAILABLE);
+
+        List<Copy> copyList = Arrays.asList(copy);
 
         loan = new LoanBuilder()
                 .withCopy(copy)
@@ -67,79 +73,58 @@ public class LoanServiceTest {
 
         userList = Arrays.asList(user);
 
-        when(copyRepository.findOne(COPY_ID)).thenReturn(copy);
-        when(userRepository.findByEmail(anyString())).thenReturn(userList);
+        when(copyRepository.findOne(copy.getId())).thenReturn(copy);
+        when(copyRepository.findDistinctCopiesByLibrarySlugAndBookIdAndStatus(copy.getLibrary().getSlug(), copy.getBook().getId(), CopyStatus.AVAILABLE)).thenReturn(copyList);
+        when(userRepository.findByEmail(USER_EMAIL)).thenReturn(userList);
         when(loanRepository.findOne(LOAN_ID)).thenReturn(loan);
-
     }
 
     @Test
     public void shouldSetCopyStatusToBorrowed() throws Exception {
-        service.borrowCopy(copy.getId(), USER_EMAIL);
-
+        service.borrowCopy(copy.getLibrary().getSlug(), copy.getBook().getId(), USER_EMAIL);
         assertThat(copy.getStatus(), is(CopyStatus.BORROWED));
     }
 
     @Test(expected = CopyIsNotAvailableException.class)
     public void shouldThrowExceptionWhenBorrowingAlreadyBorrowedCopy() throws Exception {
-        copy.setStatus(CopyStatus.BORROWED);
-        service.borrowCopy(copy.getId(), USER_EMAIL);
+        List<Copy> emptyCopyList = Arrays.asList();
+        when(copyRepository.findDistinctCopiesByLibrarySlugAndBookIdAndStatus(copy.getLibrary().getSlug(), copy.getBook().getId(), CopyStatus.AVAILABLE)).thenReturn(emptyCopyList);
+        service.borrowCopy(copy.getLibrary().getSlug(), copy.getBook().getId(), USER_EMAIL);
     }
 
     @Test(expected = UserNotFoundException.class)
     public void shouldThrowExceptionWhenNoUserIsFound() throws Exception {
-
+        copy.setStatus(CopyStatus.AVAILABLE);
         List<User> emptyUserList = Arrays.asList();
-
         when(userRepository.findByEmail(anyString())).thenReturn(emptyUserList);
-
-        service.borrowCopy(copy.getId(), USER_EMAIL);
+        service.borrowCopy(copy.getLibrary().getSlug(), copy.getBook().getId(), USER_EMAIL);
     }
 
     @Test(expected = UserNotFoundException.class)
     public void shouldThrowExceptionWhenListOfUsersIsNull() throws Exception {
-
         List<User> nullUserList = null;
-
         when(userRepository.findByEmail(anyString())).thenReturn(nullUserList);
-
-        service.borrowCopy(copy.getId(), USER_EMAIL);
+        service.borrowCopy(copy.getLibrary().getSlug(), copy.getBook().getId(), USER_EMAIL);
     }
 
-    @Test
-    public void shouldSaveBorrowedCopy() throws Exception {
-        service.borrowCopy(copy.getId(), user.getEmail());
-
-        verify(copyRepository).save(copy);
-    }
-
-    @Test
-    public void shouldSaveLoanWhenCopyIsBorrowed() throws Exception {
-        service.borrowCopy(copy.getId(), user.getEmail());
-
-        verify(loanRepository).save(loan);
-    }
 
     @Test
     public void shouldSetCopyStatusAsAvailableWhenCopyIsReturned() throws Exception {
-        copy.setStatus(CopyStatus.AVAILABLE);
+        copy.setStatus(CopyStatus.BORROWED);
         loan.setId(LOAN_ID);
         service.returnCopy(LOAN_ID);
-
         assertThat(copy.getStatus(), is(CopyStatus.AVAILABLE));
     }
 
     @Test(expected = LoanNotExistsException.class)
     public void shouldThrowExceptionWhenLoanIsNotFound() throws Exception {
         when(loanRepository.findOne(LOAN_ID)).thenReturn(null);
-
         service.returnCopy(LOAN_ID);
     }
 
     @Test
     public void shouldSetLoanEndDateWhenReturningCopy() throws Exception {
         copy.setStatus(CopyStatus.BORROWED);
-
         Loan returnedLoan = service.returnCopy(LOAN_ID);
         Date expectedLoanEndDate = new Date(System.currentTimeMillis());
 
@@ -149,9 +134,7 @@ public class LoanServiceTest {
     @Test
     public void shouldSaveLoanWhenThereIsNoEndDate() throws Exception {
         copy.setStatus(CopyStatus.BORROWED);
-
         service.returnCopy(LOAN_ID);
-
         verify(loanRepository).save(loan);
     }
 

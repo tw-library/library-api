@@ -1,8 +1,9 @@
 package com.thoughtworks.librarysystem.loan;
 
 import com.thoughtworks.librarysystem.book.Book;
+import com.thoughtworks.librarysystem.commons.factories.BookFactory;
+import com.thoughtworks.librarysystem.commons.factories.CopyFactory;
 import com.thoughtworks.librarysystem.copy.Copy;
-import com.thoughtworks.librarysystem.copy.CopyBuilder;
 import com.thoughtworks.librarysystem.loan.exceptions.CopyIsNotAvailableException;
 import com.thoughtworks.librarysystem.loan.exceptions.LoanNotExistsException;
 import com.thoughtworks.librarysystem.loan.exceptions.UserNotFoundException;
@@ -42,11 +43,10 @@ public class LoanControllerTest {
         user = new User();
         user.setEmail("some@email.com");
 
-        book = new Book();
+        book = new BookFactory().createBookWithStandardIsbn();
 
-        copy = new CopyBuilder()
-                .withBook(book)
-                .build();
+        copy = new CopyFactory().createStandardCopyWithSameIsbnAndLibrary();
+        copy.setBook(book);
 
         loan = new LoanBuilder()
                 .withUser(user)
@@ -59,7 +59,7 @@ public class LoanControllerTest {
 
     @Test
     public void shouldReturnHttpStatusCreatedWhenBookIsSuccessfullyBorrowed() {
-        when(loanService.borrowCopy(copy.getId(), user.getEmail())).thenReturn(loan);
+        when(loanService.borrowCopy(copy.getLibrary().getSlug(), copy.getBook().getId(), user.getEmail())).thenReturn(loan);
 
         ResponseEntity currentResponse = controller.borrowBook(loan, bindingResult);
         ResponseEntity expectedResponse = new ResponseEntity(HttpStatus.CREATED);
@@ -69,7 +69,7 @@ public class LoanControllerTest {
 
     @Test
     public void shouldReturnHttpConflictStatusWhenBookIsNotAvailable() {
-        doThrow(CopyIsNotAvailableException.class).when(loanService).borrowCopy(copy.getId(), user.getEmail());
+        doThrow(CopyIsNotAvailableException.class).when(loanService).borrowCopy(copy.getLibrary().getSlug(), copy.getBook().getId(), user.getEmail());
 
         ResponseEntity currentResponse = controller.borrowBook(loan, bindingResult);
         ResponseEntity expectedResponse = new ResponseEntity(HttpStatus.CONFLICT);
@@ -95,7 +95,7 @@ public class LoanControllerTest {
 
         loan.setUser(notExitentUser);
 
-        doThrow(UserNotFoundException.class).when(loanService).borrowCopy(loan.getCopy().getId(), loan.getEmail());
+        doThrow(UserNotFoundException.class).when(loanService).borrowCopy(loan.getCopy().getLibrary().getSlug() ,loan.getCopy().getBook().getId(), loan.getEmail());
 
         ResponseEntity currentResponse = controller.borrowBook(loan, bindingResult);
         ResponseEntity expectedResponse = new ResponseEntity(HttpStatus.UNAUTHORIZED);
