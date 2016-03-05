@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.rest.RepositoryRestMvcAutoConfiguration;
+import org.springframework.boot.autoconfigure.liquibase.LiquibaseAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.web.SpringBootServletInitializer;
 import org.springframework.context.annotation.*;
@@ -17,7 +18,6 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.Database;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 
-import javax.persistence.ValidationMode;
 import javax.sql.DataSource;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -29,7 +29,7 @@ import java.util.Properties;
 @ComponentScan
 @EnableJpaRepositories
 @Import(RepositoryRestMvcAutoConfiguration.class)
-@EnableAutoConfiguration
+@EnableAutoConfiguration(exclude = LiquibaseAutoConfiguration.class)
 @PropertySource("classpath:configuration.properties")
 public class Application extends SpringBootServletInitializer {
 
