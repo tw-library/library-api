@@ -12,3 +12,7 @@ public interface LibraryRepository extends CrudRepository<Library, Integer> {
     List<Library> findBySlug(@Param("slug") String slug);
 
 }
+
+
+
+

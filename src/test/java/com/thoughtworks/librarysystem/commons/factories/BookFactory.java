@@ -3,12 +3,11 @@ package com.thoughtworks.librarysystem.commons.factories;
 
 import com.thoughtworks.librarysystem.book.Book;
 import com.thoughtworks.librarysystem.book.BookBuilder;
-import com.thoughtworks.librarysystem.commons.ApplicationTestBase;
 
 /**
  * Created by eferreir on 2/8/16.
  */
-public class BookFactory extends ApplicationTestBase {
+public class BookFactory {
 
 
     public Book createBookWithStandardIsbn() {

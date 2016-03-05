@@ -4,12 +4,11 @@ package com.thoughtworks.librarysystem.commons.factories;
  * Created by eferreir on 2/16/16.
  */
 
-import com.thoughtworks.librarysystem.commons.ApplicationTestBase;
 import com.thoughtworks.librarysystem.user.User;
 import com.thoughtworks.librarysystem.user.UserBuilder;
 
 
-public class UserFactory extends ApplicationTestBase {
+public class UserFactory {
 
     public User createDefaultUser() {
         User user = new UserBuilder()
