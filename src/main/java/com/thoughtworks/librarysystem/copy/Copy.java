@@ -8,18 +8,20 @@ import com.thoughtworks.librarysystem.loan.Loan;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 
 @Table(name="copy")
 @JsonIdentityInfo(property = "id", generator = ObjectIdGenerators.PropertyGenerator.class)
 @Entity
 @Data
+@NamedQueries({
+        @NamedQuery(name = "Copy.findDistinctCopiesByLibrary",
+                    query = "Select c from Copy c where id in (Select MIN(cc.id) from Copy cc group by cc.book.id) and c.library.slug = :slug")
+})
 @EqualsAndHashCode(exclude = {"loans", "library", "book", "lastLoan"})
 @ToString(exclude = {"loans", "library", "lastLoan"})
 public class Copy {
@@ -30,12 +32,8 @@ public class Copy {
     @SequenceGenerator(name= "copy_gen", sequenceName = "copy_gen", allocationSize = 1)
     private Integer id;
 
-    @Column
+    @Column(columnDefinition = "int default 0")
     private CopyStatus status;
-
-    @Column
-    private String donator;
-
 
     @JoinColumn(name = "book_id", nullable = false)
     @ManyToOne(fetch=FetchType.EAGER)

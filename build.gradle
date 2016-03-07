@@ -4,6 +4,8 @@ version '1.0-SNAPSHOT'
 apply plugin: 'java'
 apply plugin: 'jacoco'
 apply plugin: 'spring-boot'
+apply plugin: 'org.liquibase.gradle'
+
 
 applicationDefaultJvmArgs = ["-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8001"]
 
@@ -15,6 +17,10 @@ ext {
 jar {
     baseName = 'librarysystem-api'
     version = '0.1.0'
+}
+
+configurations {
+    liquibase
 }
 
 loadConfiguration()
@@ -33,8 +39,12 @@ buildscript {
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:1.2.4.RELEASE")
+        classpath "org.postgresql:postgresql:9.3-1100-jdbc4"
+        classpath "org.liquibase:liquibase-gradle-plugin:1.2.1"
     }
+
 }
+
 
 repositories {
     mavenCentral()
@@ -44,15 +54,16 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-web") {
         exclude module: "spring-boot-starter-tomcat"
     }
-
+    compile("org.postgresql:postgresql:9.3-1100-jdbc4")
     compile("org.projectlombok:lombok:1.16.4")
     compile("org.springframework.boot:spring-boot-starter-jetty")
     compile("org.springframework.boot:spring-boot-starter-data-jpa")
     compile("org.springframework.boot:spring-boot-starter-data-rest")
     compile("org.springframework.boot:spring-boot-starter-test")
     compile("org.hibernate:hibernate-core:4.3.6.Final")
+    compile('org.atteo.moonshine:liquibase:1.1')
+    compile("org.liquibase:liquibase-gradle-plugin:1.2.1")
     compile("org.hsqldb:hsqldb:2.0.0")
-    compile("org.postgresql:postgresql:9.3-1100-jdbc4")
 
     compile("com.fasterxml.jackson.core:jackson-core:2.4.1")
     compile("com.fasterxml.jackson.core:jackson-databind:2.4.1.1")
@@ -60,6 +71,8 @@ dependencies {
 
     testCompile 'com.jayway.restassured:rest-assured:2.5.0'
     testCompile 'com.jayway.restassured:spring-mock-mvc:2.5.0'
+
+    testCompile("org.postgresql:postgresql:9.3-1100-jdbc4")
 
     testCompile group: "junit", name: "junit", version: "4.11"
     testCompile "junit:junit:4.11"
@@ -109,3 +122,22 @@ task checkTestCoverage << {
 checkTestCoverage.dependsOn jacocoTestReport
 
 test.finalizedBy checkTestCoverage
+
+liquibase {
+    activities {
+
+        main {
+            driver 'org.postgresql.Driver'
+            url 'jdbc:postgresql://localhost:5432/librarydb'
+            username 'libraryadmin'
+            password 'admin'
+            changeLogFile 'changelog.groovy'
+            referenceUrl 'jdbc:postgresql://localhost:5432/librarydb2'
+            referenceUsername 'libraryadmin'
+            referencePassword 'admin'
+            changeLogParameters([ myToken: 'myvalue',
+                                  second: 'secondValue'])
+        }
+    }
+    runList = 'main'
+}
