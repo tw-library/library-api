@@ -61,11 +61,12 @@ public class LoanRepositoryTest extends ApplicationTestBase {
 
     private MockMvc mockMvc;
 
+
     @Autowired
     private WebApplicationContext context;
 
     private User userFirst, userSecond, userThird;
-    private Copy copyFirst, copySecond, copyThird, copyFourth;
+    private Copy copyRepeatedFirst, copyRepeatedSecond, copyRepeatedThird, copyRepeatedFourth, copyThird, copyFourth;
     private Book bookFirst, bookSecond, bookThird;
     Loan loanFirst,loanSecond;
     String loanJson;
@@ -95,29 +96,40 @@ public class LoanRepositoryTest extends ApplicationTestBase {
         bookRepository.save(bookFirst);
         bookRepository.save(bookSecond);
 
-        copyFirst = new CopyFactory().createCopyWithLibraryAndBook(libraryFirst, bookFirst);
-        copySecond =new CopyFactory().createCopyWithLibraryAndBook(libraryFirst, bookFirst);
+        copyRepeatedFirst = new CopyFactory().createCopyWithLibraryAndBook(libraryFirst, bookFirst);
+        copyRepeatedSecond =new CopyFactory().createCopyWithLibraryAndBook(libraryFirst, bookFirst);
+        copyRepeatedThird =new CopyFactory().createCopyWithLibraryAndBook(libraryFirst, bookFirst);
+        copyRepeatedFourth =new CopyFactory().createCopyWithLibraryAndBook(libraryFirst, bookFirst);
+
+
         copyThird = new CopyFactory().createCopyWithLibraryAndBook(libraryFirst, bookSecond);
         copyFourth = new CopyFactory().createCopyWithLibraryAndBook(librarySecond, bookSecond);
-
-        copyRepository.save(copyFirst);
-        copyRepository.save(copySecond);
-        copyRepository.save(copyThird);
-        copyRepository.save(copyFourth);
 
         loanFirst = new LoanBuilder()
                 .build();
 
         loanSecond = new LoanBuilder()
                 .build();
+
+
+        copyRepeatedSecond.setLastLoan(loanFirst);
+
+        copyRepository.save(copyRepeatedFirst);
+        copyRepository.save(copyRepeatedSecond);
+        copyRepository.save(copyRepeatedThird);
+        copyRepository.save(copyRepeatedFourth);
+        copyRepository.save(copyThird);
+        copyRepository.save(copyFourth);
+
+
     }
 
     @Test
     public void shouldListOnePendingLoanBorrowedByOneUser() throws Exception {
-        loanFirst = loanService.borrowCopy(copyFirst.getLibrary().getSlug(), copyFirst.getBook().getId(), userFirst.getEmail());
+        loanFirst = loanService.borrowCopy(copyRepeatedFirst.getLibrary().getSlug(), copyRepeatedFirst.getBook().getId(), userFirst.getEmail());
         String email = loanFirst.getEmail();
 
-        Integer book_id = copyFirst.getBook().getId();
+        Integer book_id = copyRepeatedFirst.getBook().getId();
         String uri = "/loans/search/findByEndDateIsNullAndCopyLibrarySlugAndCopyBookId?slug=BH&book=" + book_id;
         mockMvc.perform(get(uri).accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -127,12 +139,11 @@ public class LoanRepositoryTest extends ApplicationTestBase {
                 .andExpect(jsonPath("$_embedded.loans[0].email", is(loanFirst.getEmail())))
                 .andExpect(jsonPath("$_embedded.loans[0]._embedded.copy.id", is(loanFirst.getCopy().getId())))
                 .andDo(print());
-
     }
 
     @Test
     public void shouldListZeroPendingLoanOfAReturnedBook() throws Exception {
-        loanFirst = loanService.borrowCopy(copySecond.getLibrary().getSlug(), copySecond.getBook().getId(), userSecond.getEmail());
+        loanFirst = loanService.borrowCopy(copyRepeatedSecond.getLibrary().getSlug(), copyRepeatedSecond.getBook().getId(), userSecond.getEmail());
         loanService.returnCopy(loanFirst.getId());
         String email = loanFirst.getEmail();
         Integer book_id = loanFirst.getCopy().getBook().getId();
@@ -145,8 +156,8 @@ public class LoanRepositoryTest extends ApplicationTestBase {
 
     @Test
     public void shouldListTwoPendingLoanBooksBorrowedByTwoUsers() throws Exception {
-        loanFirst = loanService.borrowCopy(copyFirst.getLibrary().getSlug(), copyFirst.getBook().getId(), userSecond.getEmail());
-        loanSecond = loanService.borrowCopy(copySecond.getLibrary().getSlug(), copySecond.getBook().getId(), userFirst.getEmail());
+        loanFirst = loanService.borrowCopy(copyRepeatedFirst.getLibrary().getSlug(), copyRepeatedFirst.getBook().getId(), userSecond.getEmail());
+        loanSecond = loanService.borrowCopy(copyRepeatedSecond.getLibrary().getSlug(), copyRepeatedSecond.getBook().getId(), userFirst.getEmail());
 
         Integer book_id = loanFirst.getCopy().getBook().getId();
         String uri = "/loans/search/findByEndDateIsNullAndCopyLibrarySlugAndCopyBookId?slug=BH&book=" + book_id;
@@ -159,6 +170,31 @@ public class LoanRepositoryTest extends ApplicationTestBase {
                 .andExpect(jsonPath("$_embedded.loans[1].endDate", is(loanSecond.getEndDate())))
                 .andExpect(jsonPath("$_embedded.loans[0]._embedded.copy.status", is(loanFirst.getCopy().getStatus().toString())))
                 .andExpect(jsonPath("$_embedded.loans[1]._embedded.copy.status", is(loanSecond.getCopy().getStatus().toString())))
+                .andDo(print());
+    }
+
+
+    @Test
+    public void shouldListOnePendingForTheUserSecond() throws Exception {
+        loanFirst = loanService.borrowCopy(copyRepeatedThird.getLibrary().getSlug(), copyRepeatedThird.getBook().getId(), userSecond.getEmail());
+        Integer book_id = loanFirst.getCopy().getBook().getId();
+        String uri = "/loans/search/countByEndDateIsNullAndCopyLibrarySlugAndCopyBookIdAndUserEmail?slug=BH&book=" + book_id+ "&email=" + userSecond.getEmail();
+        mockMvc.perform(get(uri).accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().string("1"))
+                .andDo(print());
+    }
+
+    @Test
+    public void shouldListAnyPendingForTheUserThird() throws Exception {
+        loanFirst = loanService.borrowCopy(copyRepeatedSecond.getLibrary().getSlug(), copyRepeatedSecond.getBook().getId(), userThird.getEmail());
+        loanService.returnCopy(loanFirst.getId());
+        Integer book_id = loanFirst.getCopy().getBook().getId();
+
+        String uri = "/loans/search/countByEndDateIsNullAndCopyLibrarySlugAndCopyBookIdAndUserEmail?slug=BH&book=" + book_id+ "&email=" + userThird.getEmail();
+        mockMvc.perform(get(uri).accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().string("0"))
                 .andDo(print());
     }
 

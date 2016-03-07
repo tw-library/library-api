@@ -13,4 +13,11 @@ public interface LoanRepository extends CrudRepository<Loan, Integer> {
     List<Loan> findByCopy(Copy copy);
 
     List<Loan> findByEndDateIsNullAndCopyLibrarySlugAndCopyBookId(@Param("slug") String slug, @Param("book") Integer book);
+
+    Long countByEndDateIsNullAndCopyLibrarySlugAndCopyBookIdAndUserEmail(@Param("slug") String slug, @Param("book") Integer book, @Param("email") String email);
+
+    List<Loan> findByEndDateIsNullAndCopyLibrarySlugAndCopyBookIdAndUserEmail(@Param("slug") String slug, @Param("book") Integer book, @Param("email") String email);
+
+
+
 }

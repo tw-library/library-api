@@ -124,7 +124,7 @@ public class ReturnBookRestControllerTest extends ApplicationTestBase {
         mockMvc.perform(patch(mountUrlToPatchLoan(invalidLoan))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{}"))
-                .andExpect(status().isPreconditionRequired());
+                .andExpect(status().isInternalServerError());
 
     }
 
