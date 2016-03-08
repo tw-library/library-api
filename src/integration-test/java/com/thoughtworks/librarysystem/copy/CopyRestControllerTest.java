@@ -82,10 +82,11 @@ public class CopyRestControllerTest extends ApplicationTestBase {
         copyThird = new CopyFactory().createCopyWithLibraryAndBook(libraryBH, bookUnic);
 
         copyFourthPOA = new CopyFactory().createCopyWithLibraryAndBook(libraryPOA, book);
+        copyRepository.save(copyFourthPOA);
         copyRepository.save(copy);
         copyRepository.save(copySecond);
         copyRepository.save(copyThird);
-        copyRepository.save(copyFourthPOA);
+
     }
 
     @Test

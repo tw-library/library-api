@@ -20,7 +20,7 @@ import java.util.List;
 @Data
 @NamedQueries({
         @NamedQuery(name = "Copy.findDistinctCopiesByLibrary",
-                    query = "Select c from Copy c where id in (Select MIN(cc.id) from Copy cc group by cc.book.id) and c.library.slug = :slug")
+                query = "Select c from Copy c where id in (Select MIN(cc.id) from Copy cc where cc.library.slug = :slug group by cc.book.id)")
 })
 @EqualsAndHashCode(exclude = {"loans", "library", "book", "lastLoan"})
 @ToString(exclude = {"loans", "library", "lastLoan"})
