@@ -21,6 +21,9 @@ jar {
 
 configurations {
     liquibase
+
+    integrationTestCompile.extendsFrom testCompile
+    integrationTestRuntime.extendsFrom testRuntime
 }
 
 loadConfiguration()
@@ -45,9 +48,19 @@ buildscript {
 
 }
 
-
 repositories {
     mavenCentral()
+}
+
+sourceSets {
+    integrationTest {
+        java {
+            compileClasspath += main.output + test.output
+            runtimeClasspath += main.output + test.output
+            srcDir file('src/integration-test/java')
+        }
+        resources.srcDir file('src/integration-test/resources')
+    }
 }
 
 dependencies {
@@ -102,6 +115,11 @@ task copyConfiguration << {
 processResources.dependsOn copyConfiguration
 
 task stage(dependsOn: ['clean', 'installApp'])
+
+task integrationTest(type: Test) {
+    testClassesDir = sourceSets.integrationTest.output.classesDir
+    classpath = sourceSets.integrationTest.runtimeClasspath
+}
 
 task checkTestCoverage << {
     def coverageReportPath = "build/reports/jacoco/test/html/index.html"
