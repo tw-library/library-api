@@ -50,9 +50,6 @@ public class CopyRestControllerTest extends ApplicationTestBase {
     @Autowired
     CopyRepository copyRepository;
 
-    @Autowired
-    private LoanService loanService;
-
     private Book book, bookUnic;
     private Copy copy, copySecond, copyThird, copyFourthPOA;
 
@@ -102,7 +99,6 @@ public class CopyRestControllerTest extends ApplicationTestBase {
         mockMvc.perform(get("/copies"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaTypes.HAL_JSON))
-                .andExpect(jsonPath("$_embedded.copies[0].id", is(copy.getId())))
                 .andExpect(jsonPath("$_embedded.copies[0].status", is(copy.getStatus().name())))
                 .andExpect(jsonPath("$_embedded.copies[0].title", is(book.getTitle())))
                 .andExpect(jsonPath("$_embedded.copies[0].author", is(book.getAuthor())))
