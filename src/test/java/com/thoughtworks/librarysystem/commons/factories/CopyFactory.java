@@ -4,6 +4,7 @@ package com.thoughtworks.librarysystem.commons.factories;
 import com.thoughtworks.librarysystem.book.Book;
 import com.thoughtworks.librarysystem.copy.Copy;
 import com.thoughtworks.librarysystem.copy.CopyBuilder;
+import com.thoughtworks.librarysystem.copy.CopyStatus;
 import com.thoughtworks.librarysystem.library.Library;
 
 /**
@@ -11,6 +12,18 @@ import com.thoughtworks.librarysystem.library.Library;
  */
 public class CopyFactory {
 
+    public Copy createStandardCopyWithSameIsbnAndLibraryAndBorrowed() {
+
+        Book book = new BookFactory().createBookWithStandardIsbn();
+        Library library = new LibraryFactory().createStardardLibrary();
+
+        Copy copy = new CopyBuilder()
+                .withBook(book)
+                .withLibrary(library)
+                .withStatus(CopyStatus.BORROWED)
+                .build();
+        return copy;
+    }
 
     public Copy createStandardCopyWithSameIsbnAndLibrary() {
 

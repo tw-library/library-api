@@ -19,10 +19,10 @@ import java.util.List;
 @Entity
 @Data
 @NamedQueries({
-        @NamedQuery(name = "Copy.findDistinctCopiesByLibrary",
-                query = "Select c from Copy c where id in (Select MIN(cc.id) from Copy cc where cc.library.slug = :slug group by cc.book.id)")
+        @NamedQuery(name = "Copy.findCopiesByLoansAndLoansUserId",
+                query = "Select distinct c from Copy c join c.loans l join l.user u where u.id = :id")
 })
-@EqualsAndHashCode(exclude = {"loans", "library", "book", "lastLoan"})
+@EqualsAndHashCode(exclude = {"loans", "library", "book", "lastLoan", "status"})
 @ToString(exclude = {"loans", "library", "lastLoan"})
 public class Copy {
 

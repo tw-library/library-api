@@ -123,15 +123,6 @@ public class CopyRestControllerTest extends ApplicationTestBase {
     }
 
     @Test
-    public void shouldListTwoDistinctCopiesByLibraryBH() throws Exception {
-        mockMvc.perform(get("/copies/search/findDistinctCopiesByLibrary?slug=BH").accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$_embedded.copies", hasSize(2)))
-                .andDo(print());
-
-    }
-
-    @Test
     public void shouldHaveOneAvailableBooksOfTwo() throws Exception {
         Integer book_id = copy.getBook().getId();
         String uri = "/copies/search/countByLibrarySlugAndBookIdAndStatus?slug=BH&book=" + book_id + "&status=AVAILABLE";

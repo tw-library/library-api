@@ -61,28 +61,22 @@ public class LoanService {
 
     public Loan returnCopy(Integer loanId) throws LoanNotExistsException {
         Loan loan = loanRepository.findOne(loanId);
+
+        if((loan == null)) {
+            throw new LoanNotExistsException();
+        }
         Copy copy = loan.getCopy();
-
-        if((loan == null) || (copy == null)) {
+        if (copy == null) {
             throw new LoanNotExistsException();
         }
 
-        List <Copy> unAvailableCopies = copyRepository.findDistinctCopiesByLibrarySlugAndBookIdAndStatus(copy.getLibrary().getSlug(), copy.getBook().getId(), CopyStatus.BORROWED);
-
-        if(unAvailableCopies.isEmpty()) {
-            throw new LoanNotExistsException();
-        }
-
-        copy = unAvailableCopies.get(0);
-        List <Loan> pendingLoans = loanRepository.findByEndDateIsNullAndCopyLibrarySlugAndCopyBookIdAndUserEmail(copy.getLibrary().getSlug(), copy.getBook().getId(),loan.getEmail());
-        Loan lastLoan = pendingLoans.get(0);
         copy.setStatus(CopyStatus.AVAILABLE);
         copyRepository.save(copy);
 
 
-        if(lastLoan.getEndDate() == null) {
-            lastLoan.setEndDate(new Date(System.currentTimeMillis()));
-            loanRepository.save(lastLoan);
+        if(loan.getEndDate() == null) {
+            loan.setEndDate(new Date(System.currentTimeMillis()));
+            loanRepository.save(loan);
         }
 
         return loan;
