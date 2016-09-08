@@ -30,6 +30,7 @@ loadConfiguration()
 
 def loadConfiguration() {
     def environment = hasProperty('env') ? env : System.getenv('APP_ENV')
+
     environment = environment != null ? environment : 'development'
 
     project.ext.environment = environment
