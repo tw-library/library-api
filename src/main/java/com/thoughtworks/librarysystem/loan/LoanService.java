@@ -62,7 +62,7 @@ public class LoanService {
     public Loan returnCopy(Integer loanId) throws LoanNotExistsException {
         Loan loan = loanRepository.findOne(loanId);
 
-        if((loan == null)) {
+        if(loan == null) {
             throw new LoanNotExistsException();
         }
         Copy copy = loan.getCopy();
