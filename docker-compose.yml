@@ -1,0 +1,15 @@
+version: '2'
+services:
+  mongodb:
+    image: mongo
+    ports:
+      - "27017:27017"
+  api:
+    build: .
+    image: kamu-api
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/go/src/github.com/kamu-api
+    depends_on:
+      - mongodb

@@ -1,0 +1,8 @@
+{
+	"Server"	: "0.0.0.0:8080",
+	"MongoDBHost"	: "mongodb:27017",
+	"MongoDBUser"	: "",
+	"MongoDBPwd"	: "",
+	"Database"		: "librarydb",
+	"LogLevel"	: 4
+}
